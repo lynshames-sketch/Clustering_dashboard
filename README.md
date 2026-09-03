@@ -3,19 +3,22 @@
 > **Exploration de la Topologie Latente (*GMM* • *k-means* • *PyTorch*) & Réduction d'Hallucinations par Entropie**  
 > **Auteur :** Saubaber Longang Gamo (Ph.D. en Économie • Modélisation Économétrique & IA)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-58a6ff.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-4f46e5.svg)](LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-58a6ff?logo=github)](https://lynshames-sketch.github.io/Clustering_dashboard/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-4f46e5?logo=github)](https://lynshames-sketch.github.io/Clustering_dashboard/)
 
 ---
 
-## 🎨 Charte Graphique : Espace Latent & R&D
+## 🔬 Charte Graphique : Laboratoire Scientifique & White Paper
 
-* `#06070a` : **Noir Cosmique Profond** (Fond d'immersion de recherche)
-* `#131822` : **Ardoise Espace** (Conteneurs & panneaux)
-* `#58a6ff` : **Bleu Glacé Électrique** (Embeddings, vecteurs & attention)
-* `#bc8cff` : **Lilas Quantique** (Centroïdes, clusters & convergence)
-* `#f0f6fc` : **Blanc Froid Pur** (Typographie scientifique haute netteté)
+Une esthétique épurée inspirée des publications et laboratoires de recherche contemporains (Nature, OpenAI Research, DeepMind) :
+* `#f8fafc` : **Blanc Perle / Papier Recherche** (Fond d'immersion lumineux avec micro-trame géométrique)
+* `#ffffff` : **Cartes Blanches Porcelaine** (Conteneurs avec bordures délimitées fines `#e2e8f0`)
+* `#0f172a` : **Ardoise Anthracite Profonde** (Titres et typographie haute lisibilité)
+* `#4f46e5` : **Indigo Royal** (Embeddings, vecteurs d'attention et contrôles interactifs)
+* `#7c3aed` : **Violet Quantique** (Métrique de Davies-Bouldin, centroïdes et courbes de convergence)
+* `#059669` : **Émeraude Scientifique** (Inférences factuelles à faible entropie)
+* `#dc2626` : **Rubis / Crimson** (Dérive sémantique et hallucinations rejetées)
 
 ---
 

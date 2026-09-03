@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr" class="dark">
+<html lang="fr" class="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Suite R&D Core ML & Espace Latent (*GMM* • *k-means* • *PyTorch*) | Saubaber Longang Gamo (Ph.D.)</title>
+  <title>Suite R&D Core ML & Espace Latent (GMM • k-means • PyTorch) | Saubaber Longang Gamo (Ph.D.)</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,16 +13,22 @@
       theme: {
         extend: {
           colors: {
-            // PALETTE R&D CORE ML / NOIR COSMIQUE
-            obsidianDark: '#06070a',   // Fond principal noir cosmique profond
-            slateCard: '#131822',      // Fond des conteneurs et cartes
-            electricIce: '#58a6ff',    // Ice Blue / Embeddings et vecteurs actifs
-            quantumLilac: '#bc8cff',   // Quantum Lilac / Centroïdes & clusters
-            pureColdWhite: '#f0f6fc',  // Typographie haute fidélité
+            // PALETTE LABORATOIRE SCIENTIFIQUE / FOND BLANC ÉPURÉ
+            labBg: '#f8fafc',          // Fond principal blanc perle / papier recherche
+            labCard: '#ffffff',        // Fond des conteneurs et cartes blanches
+            labBorder: '#e2e8f0',      // Bordures délimitées ultra nettes
+            labBorderHover: '#cbd5e1', // Bordures au survol
             
-            // ACCENTS TECHNIQUES
-            metricGreen: '#3fb950',
-            metricRed: '#f85149'
+            // COULEURS ALGORITHMIQUES HAUTE LISIBILITÉ
+            labTextPrimary: '#0f172a', // Texte principal ardoise foncée
+            labTextSecondary: '#475569', // Texte secondaire explicatif
+            labTextMuted: '#64748b',   // Notes mathématiques et indices
+            
+            labIndigo: '#4f46e5',      // Royal Indigo / Embeddings et actions
+            labViolet: '#7c3aed',      // Quantum Violet / Centroïdes & clusters
+            labEmerald: '#059669',     // Vert émeraude / Inférence factuelle
+            labCrimson: '#dc2626',     // Rouge rubis / Hallucinations détectées
+            labAmber: '#d97706'        // Ambre doré
           },
           fontFamily: {
             sans: ['"Plus Jakarta Sans"', 'sans-serif'],
@@ -38,7 +44,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -49,47 +55,54 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, { ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code', 'canvas'] });"></script>
 
   <style>
-    .glass-research {
-      background: rgba(22, 27, 34, 0.75);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
-      border: 1px solid rgba(88, 166, 255, 0.18);
-      box-shadow: 0 10px 30px -10px rgba(13, 17, 23, 0.8);
+    body {
+      background-color: #f8fafc;
+      background-image: radial-gradient(rgba(79, 70, 229, 0.04) 1px, transparent 1px);
+      background-size: 24px 24px;
     }
-    .glass-research-subtle {
-      background: rgba(240, 246, 252, 0.02);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(188, 140, 255, 0.18);
+    .card-lab {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s ease-in-out;
+    }
+    .card-lab:hover {
+      box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.06);
     }
   </style>
 </head>
-<body class="bg-obsidianDark text-pureColdWhite font-sans min-h-screen antialiased flex flex-col selection:bg-electricIce/30 selection:text-white overflow-x-hidden">
+<body class="text-labTextPrimary font-sans min-h-screen antialiased flex flex-col selection:bg-labIndigo/20 selection:text-labIndigo overflow-x-hidden">
 
-  <!-- HALOS VOLUMÉTRIQUES DE FOND RESEARCH AI -->
-  <div class="fixed top-[-10%] left-[-5%] w-[650px] h-[650px] rounded-full bg-electricIce/10 blur-[170px] pointer-events-none -z-10"></div>
-  <div class="fixed bottom-[-10%] right-[-5%] w-[700px] h-[700px] rounded-full bg-quantumLilac/10 blur-[180px] pointer-events-none -z-10"></div>
+  <!-- HALOS AMBIANTS DE FOND LABORATOIRE BLANC (SUBTILS DIFFUSIONS INDIGO & VIOLET) -->
+  <div class="fixed top-[-10%] left-[-5%] w-[650px] h-[650px] rounded-full bg-labIndigo/5 blur-[150px] pointer-events-none -z-10"></div>
+  <div class="fixed bottom-[-10%] right-[-5%] w-[700px] h-[700px] rounded-full bg-labViolet/5 blur-[160px] pointer-events-none -z-10"></div>
 
-  <!-- NAVIGATION HEADER ÉPURÉE -->
-  <header class="border-b border-[#30363d] bg-obsidianDark/85 backdrop-blur-xl sticky top-0 z-50">
+  <!-- NAVIGATION HEADER BLANC ÉPURÉ -->
+  <header class="border-b border-labBorder bg-white/90 backdrop-blur-xl sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3.5">
-        <div class="w-9 h-9 rounded-xl bg-electricIce/15 border border-electricIce/35 flex items-center justify-center text-electricIce font-mono text-base shadow-inner">
+        <div class="w-10 h-10 rounded-xl bg-labIndigo/10 border border-labIndigo/25 flex items-center justify-center text-labIndigo font-mono text-base shadow-sm">
           <i class="fa-solid fa-cube"></i>
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <h1 class="font-heading font-bold text-base md:text-lg tracking-wide text-white">LATENT SPACE & CLUSTERING SUITE</h1>
-            <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-electricIce/15 border border-electricIce/35 text-electricIce font-mono font-semibold">R&D • CORE ML</span>
+            <h1 class="font-heading font-bold text-base md:text-lg tracking-wide text-labTextPrimary">LATENT SPACE & CLUSTERING SUITE</h1>
+            <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-labIndigo/10 border border-labIndigo/20 text-labIndigo font-mono font-semibold">R&D • CORE ML</span>
           </div>
-          <p class="text-[11px] text-slate-400 font-light">Espace Latent • Tenseurs <em>PyTorch</em> • Réduction d'Hallucinations</p>
+          <p class="text-[11px] text-labTextMuted font-light">Espace Latent • Tenseurs <em>PyTorch</em> • Réduction d'Hallucinations</p>
         </div>
       </div>
 
       <div class="flex items-center gap-4">
-        <div class="hidden sm:flex items-center gap-2 text-xs font-mono bg-slateCard px-3.5 py-1.5 rounded-full border border-[#30363d]">
-          <span class="w-2 h-2 rounded-full bg-metricGreen animate-pulse"></span>
+        <div class="hidden sm:flex items-center gap-2 text-xs font-mono bg-slate-50 px-3.5 py-1.5 rounded-full border border-labBorder text-labTextSecondary">
+          <span class="w-2 h-2 rounded-full bg-labEmerald animate-pulse"></span>
           <span>Agent Autonome <em>Antigravity</em> : Actif</span>
         </div>
+
+        <a href="../prudential-dashboard/index.html" class="text-xs font-medium text-labTextSecondary hover:text-labIndigo transition-colors flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-labBorder hover:bg-slate-50">
+          <i class="fa-solid fa-arrow-left text-[10px]"></i>
+          <span>Prudential Risk</span>
+        </a>
       </div>
     </div>
   </header>
@@ -97,47 +110,47 @@
   <!-- CONTENU PRINCIPAL -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-8">
 
-    <!-- CADRE PÉDAGOGIQUE R&D (SANS ÉTIQUETTES MÉTA) -->
-    <div class="glass-research rounded-2xl p-6 md:p-8 space-y-6">
+    <!-- CADRE PÉDAGOGIQUE R&D BLANC -->
+    <div class="card-lab rounded-2xl p-6 md:p-8 space-y-6">
       
       <!-- Synthèse claire et accessible -->
       <div class="space-y-1.5">
-        <div class="flex items-center gap-2 text-xs font-mono text-electricIce uppercase tracking-wider font-semibold">
+        <div class="flex items-center gap-2 text-xs font-mono text-labIndigo uppercase tracking-wider font-semibold">
           <i class="fa-solid fa-atom"></i>
           <span>Synthèse Algorithmique</span>
         </div>
-        <p class="text-lg md:text-2xl font-serif text-pureColdWhite font-medium leading-relaxed">
+        <p class="text-lg md:text-2xl font-serif text-labTextPrimary font-medium leading-relaxed">
           Ce laboratoire visuel montre comment les représentations d'un réseau de neurones sont regroupées en concepts cohérents et comment filtrer les hallucinations d'une IA grâce à l'entropie prédictive.
         </p>
       </div>
 
       <!-- Cadrage mathématique avancé pour chercheur / lead data scientist -->
-      <div class="pt-5 border-t border-[#30363d] space-y-2">
-        <div class="flex items-center gap-2 text-xs font-mono text-quantumLilac uppercase tracking-wider font-semibold">
+      <div class="pt-5 border-t border-labBorder space-y-2">
+        <div class="flex items-center gap-2 text-xs font-mono text-labViolet uppercase tracking-wider font-semibold">
           <i class="fa-solid fa-microscope"></i>
           <span>Cadrage Théorique & Algorithmique Formel</span>
         </div>
-        <p class="text-sm md:text-base text-slate-300 font-light leading-relaxed">
+        <p class="text-sm md:text-base text-labTextSecondary font-light leading-relaxed">
           Exploration topologique des représentations denses dans le sous-espace latent $\mathbb{R}^{768}$ via modèles de mélanges gaussiens (<em>GMM</em>) et <em>k-means</em>. Minimisation contrastive par perte <em>InfoNCE</em> et filtrage d'incertitude épistémique par seuillage d'entropie de Shannon.
         </p>
       </div>
 
       <!-- Objectifs opérationnels chiffrés -->
-      <div class="pt-5 border-t border-[#30363d] space-y-3">
-        <div class="text-xs font-mono text-electricIce uppercase tracking-wider font-semibold">
+      <div class="pt-5 border-t border-labBorder space-y-3">
+        <div class="text-xs font-mono text-labIndigo uppercase tracking-wider font-semibold">
           Objectifs Opérationnels du Pipeline R&D :
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-pureColdWhite">
-          <div class="glass-research-subtle p-4 rounded-xl border border-[#30363d] flex items-start gap-3">
-            <i class="fa-solid fa-circle-nodes text-electricIce mt-1"></i>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-labTextPrimary">
+          <div class="bg-slate-50/80 p-4 rounded-xl border border-labBorder flex items-start gap-3">
+            <i class="fa-solid fa-circle-nodes text-labIndigo mt-1 text-sm"></i>
             <span class="leading-relaxed">Projeter les embeddings haute dimension sur le manifold 2D avec préservation des voisinages locaux.</span>
           </div>
-          <div class="glass-research-subtle p-4 rounded-xl border border-[#30363d] flex items-start gap-3">
-            <i class="fa-solid fa-chart-line text-quantumLilac mt-1"></i>
+          <div class="bg-slate-50/80 p-4 rounded-xl border border-labBorder flex items-start gap-3">
+            <i class="fa-solid fa-chart-line text-labViolet mt-1 text-sm"></i>
             <span class="leading-relaxed">Évaluer la compacité et séparation géométrique par le coefficient de Silhouette et l'indice de Davies-Bouldin.</span>
           </div>
-          <div class="glass-research-subtle p-4 rounded-xl border border-[#30363d] flex items-start gap-3">
-            <i class="fa-solid fa-filter text-electricIce mt-1"></i>
+          <div class="bg-slate-50/80 p-4 rounded-xl border border-labBorder flex items-start gap-3">
+            <i class="fa-solid fa-filter text-labEmerald mt-1 text-sm"></i>
             <span class="leading-relaxed">Rejeter les générations aberrantes (hallucinations <em>LLM</em>) dépassant le seuil critique d'entropie prédictive.</span>
           </div>
         </div>
@@ -145,89 +158,89 @@
 
     </div>
 
-    <!-- FORMULES MATHÉMATIQUES OFFICIELLES (KATEX LATEX) -->
+    <!-- FORMULES MATHÉMATIQUES OFFICIELLES (KATEX LATEX) EN MODE SCIENTIFIQUE ÉPURÉ -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       
       <!-- 1. InfoNCE Contrastive Loss -->
-      <div class="glass-research rounded-xl p-5 space-y-2">
-        <div class="text-xs font-mono text-electricIce font-semibold flex items-center justify-between">
+      <div class="card-lab rounded-xl p-5 space-y-2">
+        <div class="text-xs font-mono text-labIndigo font-semibold flex items-center justify-between">
           <span>1. Perte Contrastive (<em>InfoNCE</em>)</span>
-          <span class="text-[10px] text-slate-400">Représentation Auto-Supervisée</span>
+          <span class="text-[10px] text-labTextMuted">Auto-Supervisée</span>
         </div>
-        <div class="text-xs font-mono text-white py-2 overflow-x-auto text-center bg-obsidianDark/80 rounded-lg p-2 border border-[#30363d]">
+        <div class="text-xs font-mono text-labTextPrimary py-2 overflow-x-auto text-center bg-slate-50 rounded-lg p-2 border border-labBorder">
           $$\mathcal{L}_{\text{InfoNCE}} = -\log \frac{\exp(\mathbf{q} \cdot \mathbf{k}_+ / \tau)}{\sum_{j=1}^K \exp(\mathbf{q} \cdot \mathbf{k}_j / \tau)}$$
         </div>
-        <p class="text-[11px] text-slate-400 font-light">Rapproche les paires sémantiquement similaires dans l'espace latent avec paramètre de température $\tau$.</p>
+        <p class="text-[11px] text-labTextSecondary font-light">Rapproche les paires sémantiquement similaires dans l'espace latent avec paramètre de température $\tau$.</p>
       </div>
 
       <!-- 2. Silhouette Score -->
-      <div class="glass-research rounded-xl p-5 space-y-2">
-        <div class="text-xs font-mono text-electricIce font-semibold flex items-center justify-between">
+      <div class="card-lab rounded-xl p-5 space-y-2">
+        <div class="text-xs font-mono text-labIndigo font-semibold flex items-center justify-between">
           <span>2. Coefficient de Silhouette</span>
-          <span class="text-[10px] text-slate-400">Qualité du Partitionnement</span>
+          <span class="text-[10px] text-labTextMuted">Qualité Partition</span>
         </div>
-        <div class="text-xs font-mono text-white py-2 overflow-x-auto text-center bg-obsidianDark/80 rounded-lg p-2 border border-[#30363d]">
+        <div class="text-xs font-mono text-labTextPrimary py-2 overflow-x-auto text-center bg-slate-50 rounded-lg p-2 border border-labBorder">
           $$s(i) = \frac{b(i) - a(i)}{\max(a(i), b(i))}, \quad s(i) \in [-1, 1]$$
         </div>
-        <p class="text-[11px] text-slate-400 font-light">$a(i)$ mesure la cohésion intra-cluster et $b(i)$ l'isolement vis-à-vis du cluster voisin le plus proche.</p>
+        <p class="text-[11px] text-labTextSecondary font-light">$a(i)$ mesure la cohésion intra-cluster et $b(i)$ l'isolement vis-à-vis du cluster voisin le plus proche.</p>
       </div>
 
       <!-- 3. Entropie Anti-Hallucination -->
-      <div class="glass-research rounded-xl p-5 space-y-2">
-        <div class="text-xs font-mono text-electricIce font-semibold flex items-center justify-between">
+      <div class="card-lab rounded-xl p-5 space-y-2">
+        <div class="text-xs font-mono text-labIndigo font-semibold flex items-center justify-between">
           <span>3. Filtrage Anti-Hallucination</span>
-          <span class="text-[10px] text-slate-400">Entropie de Shannon</span>
+          <span class="text-[10px] text-labTextMuted">Entropie Shannon</span>
         </div>
-        <div class="text-xs font-mono text-white py-2 overflow-x-auto text-center bg-obsidianDark/80 rounded-lg p-2 border border-[#30363d]">
+        <div class="text-xs font-mono text-labTextPrimary py-2 overflow-x-auto text-center bg-slate-50 rounded-lg p-2 border border-labBorder">
           $$H(p) = -\sum_{c=1}^C p_c \log_2(p_c) \le H_{\text{seuil}}$$
         </div>
-        <p class="text-[11px] text-slate-400 font-light">Détection des états d'incertitude épistémique pour neutraliser les dérives sémantiques non ancrées.</p>
+        <p class="text-[11px] text-labTextSecondary font-light">Détection des états d'incertitude épistémique pour neutraliser les dérives sémantiques non ancrées.</p>
       </div>
 
     </div>
 
-    <!-- GRILLE DE VISUALISATION : CANVAS LATENT & INSPECTION TENSORIELLE -->
+    <!-- GRILLE DE VISUALISATION : CANVAS LATENT BLANC & INSPECTION TENSORIELLE -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
       <!-- COLONNE GAUCHE : MANIFOLD 2D DES EMBEDDINGS (7 Cols) -->
-      <div class="lg:col-span-7 glass-research rounded-2xl p-6 space-y-5 shadow-2xl">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#30363d] pb-4">
+      <div class="lg:col-span-7 card-lab rounded-2xl p-6 space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-labBorder pb-4">
           <div>
-            <h3 class="font-heading font-bold text-white text-lg flex items-center gap-2">
-              <i class="fa-solid fa-circle-nodes text-electricIce"></i>
+            <h3 class="font-heading font-bold text-labTextPrimary text-lg flex items-center gap-2">
+              <i class="fa-solid fa-circle-nodes text-labIndigo"></i>
               <span>Projection 2D de l'Espace Latent</span>
             </h3>
-            <p class="text-xs text-slate-400 font-light">Espace vectoriel projeté (<em>PCA</em> / <em>UMAP</em> manifold)</p>
+            <p class="text-xs text-labTextSecondary font-light">Espace vectoriel projeté (<em>PCA</em> / <em>UMAP</em> manifold)</p>
           </div>
 
           <!-- Sélecteur d'Algorithme -->
-          <div class="inline-flex rounded-xl p-1 bg-obsidianDark border border-[#30363d] text-xs font-mono">
-            <button id="btnGMM" onclick="setAlgorithm('gmm')" class="px-3 py-1 rounded-lg bg-electricIce text-obsidianDark font-bold transition-all"><em>GMM</em> (Densité)</button>
-            <button id="btnKMeans" onclick="setAlgorithm('kmeans')" class="px-3 py-1 rounded-lg text-slate-400 hover:text-white transition-all"><em>k-means</em></button>
+          <div class="inline-flex rounded-xl p-1 bg-slate-100 border border-labBorder text-xs font-mono">
+            <button id="btnGMM" onclick="setAlgorithm('gmm')" class="px-3 py-1 rounded-lg bg-labIndigo text-white font-bold transition-all shadow-sm"><em>GMM</em> (Densité)</button>
+            <button id="btnKMeans" onclick="setAlgorithm('kmeans')" class="px-3 py-1 rounded-lg text-labTextSecondary hover:text-labTextPrimary transition-all"><em>k-means</em></button>
           </div>
         </div>
 
-        <!-- CANVAS INTERACTIF AVEC ANNOTATION DES AXES DE VARIANCE PCA -->
-        <div class="relative bg-obsidianDark/90 rounded-xl border border-[#30363d] h-[390px] overflow-hidden group">
+        <!-- CANVAS INTERACTIF BLANC AVEC ANNOTATION DES AXES DE VARIANCE PCA -->
+        <div class="relative bg-white rounded-xl border border-labBorder h-[390px] overflow-hidden group shadow-inner">
           <canvas id="latentCanvas" width="680" height="390" class="w-full h-full cursor-crosshair"></canvas>
           
           <!-- Axes Annotés Scientifiquement pour Data Scientists -->
-          <div class="absolute bottom-2 right-3 text-[10px] font-mono text-slate-400">
+          <div class="absolute bottom-2 right-3 text-[10px] font-mono text-slate-500 font-medium">
             Axe X : <em>Dimension 1 (PCA 42.8 % de variance)</em>
           </div>
-          <div class="absolute top-3 left-3 text-[10px] font-mono text-slate-400 rotate-90 origin-top-left mt-2">
+          <div class="absolute top-3 left-3 text-[10px] font-mono text-slate-500 font-medium rotate-90 origin-top-left mt-2">
             Axe Y : <em>Dimension 2 (PCA 28.4 % de variance)</em>
           </div>
 
           <!-- Légende Dynamique Flottante -->
-          <div class="absolute bottom-6 left-6 glass-research-subtle px-3 py-2 rounded-lg border border-[#30363d] text-[10px] font-mono space-y-1 backdrop-blur-md">
+          <div class="absolute bottom-6 left-6 bg-white/95 px-3 py-2 rounded-lg border border-labBorder text-[10px] font-mono space-y-1 shadow-sm backdrop-blur-md">
             <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-electricIce"></span>
-              <span class="text-slate-300">Inférence Factuelle ($H \le 0.45$)</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-labIndigo"></span>
+              <span class="text-slate-700">Inférence Factuelle ($H \le 0.45$)</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-metricRed ring-2 ring-metricRed/30"></span>
-              <span class="text-metricRed">Hallucination Rejetée ($H > 0.45$)</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-labCrimson ring-2 ring-labCrimson/20"></span>
+              <span class="text-labCrimson font-medium">Hallucination Rejetée ($H > 0.45$)</span>
             </div>
           </div>
         </div>
@@ -237,33 +250,33 @@
           
           <div class="space-y-1.5 font-mono text-xs">
             <div class="flex justify-between">
-              <span class="text-slate-400">Clusters ($k$)</span>
-              <span id="txtK" class="text-electricIce font-bold">4</span>
+              <span class="text-labTextSecondary">Clusters (<em>k</em>)</span>
+              <span id="txtK" class="text-labIndigo font-bold">4</span>
             </div>
-            <input type="range" id="sliderK" min="2" max="6" value="4" class="w-full accent-electricIce bg-obsidianDark h-1.5 rounded cursor-pointer" oninput="updateManifold()">
+            <input type="range" id="sliderK" min="2" max="6" value="4" class="w-full accent-labIndigo bg-slate-200 h-1.5 rounded cursor-pointer" oninput="updateManifold()">
           </div>
 
           <div class="space-y-1.5 font-mono text-xs">
             <div class="flex justify-between">
-              <span class="text-slate-400">Bruit ($\sigma$)</span>
-              <span id="txtNoise" class="text-quantumLilac font-bold">0.18</span>
+              <span class="text-labTextSecondary">Bruit (&sigma;)</span>
+              <span id="txtNoise" class="text-labViolet font-bold">0.18</span>
             </div>
-            <input type="range" id="sliderNoise" min="5" max="40" value="18" class="w-full accent-quantumLilac bg-obsidianDark h-1.5 rounded cursor-pointer" oninput="updateManifold()">
+            <input type="range" id="sliderNoise" min="5" max="40" value="18" class="w-full accent-labViolet bg-slate-200 h-1.5 rounded cursor-pointer" oninput="updateManifold()">
           </div>
 
           <div class="space-y-1.5 font-mono text-xs">
             <div class="flex justify-between">
-              <span class="text-slate-400">Seuil Hallucination</span>
-              <span id="txtEntropy" class="text-metricRed font-bold">0.45</span>
+              <span class="text-labTextSecondary">Seuil Hallucination</span>
+              <span id="txtEntropy" class="text-labCrimson font-bold">0.45</span>
             </div>
-            <input type="range" id="sliderEntropy" min="10" max="80" value="45" class="w-full accent-metricRed bg-obsidianDark h-1.5 rounded cursor-pointer" oninput="updateManifold()">
+            <input type="range" id="sliderEntropy" min="10" max="80" value="45" class="w-full accent-labCrimson bg-slate-200 h-1.5 rounded cursor-pointer" oninput="updateManifold()">
           </div>
 
         </div>
 
-        <div class="flex justify-between text-xs font-mono text-slate-400 pt-1 border-t border-[#30363d]">
+        <div class="flex justify-between text-xs font-mono text-slate-500 pt-1 border-t border-labBorder">
           <span>Survolez un point pour inspecter son vecteur d'embedding.</span>
-          <span id="hoverInfoTxt" class="text-electricIce">Vecteur sélectionné : [0.42, -0.81, ...]</span>
+          <span id="hoverInfoTxt" class="text-labIndigo font-medium">Vecteur sélectionné : [0.42, -0.81, ...]</span>
         </div>
       </div>
 
@@ -272,50 +285,50 @@
 
         <!-- METRICS DE QUALITÉ GÉOMÉTRIQUE -->
         <div class="grid grid-cols-3 gap-3 font-mono">
-          <div class="glass-research p-3.5 rounded-xl border border-[#30363d] text-center">
-            <span class="text-[10px] text-slate-400 block uppercase">Silhouette <em>s</em></span>
-            <span id="metricSilhouette" class="text-base font-bold text-electricIce">0.724</span>
+          <div class="card-lab p-3.5 rounded-xl text-center">
+            <span class="text-[10px] text-labTextMuted block uppercase">Silhouette <em>s</em></span>
+            <span id="metricSilhouette" class="text-base font-bold text-labIndigo">0.724</span>
           </div>
-          <div class="glass-research p-3.5 rounded-xl border border-[#30363d] text-center">
-            <span class="text-[10px] text-slate-400 block uppercase">Davies-Bouldin</span>
-            <span id="metricDB" class="text-base font-bold text-quantumLilac">0.648</span>
+          <div class="card-lab p-3.5 rounded-xl text-center">
+            <span class="text-[10px] text-labTextMuted block uppercase">Davies-Bouldin</span>
+            <span id="metricDB" class="text-base font-bold text-labViolet">0.648</span>
           </div>
-          <div class="glass-research p-3.5 rounded-xl border border-[#30363d] text-center">
-            <span class="text-[10px] text-slate-400 block uppercase">Hallucinations</span>
-            <span id="metricHallucination" class="text-base font-bold text-metricGreen">3.2 %</span>
+          <div class="card-lab p-3.5 rounded-xl text-center">
+            <span class="text-[10px] text-labTextMuted block uppercase">Hallucinations</span>
+            <span id="metricHallucination" class="text-base font-bold text-labEmerald">3.2 %</span>
           </div>
         </div>
 
         <!-- HEATMAP DES POIDS D'ATTENTION MULTI-TÊTES -->
-        <div class="glass-research rounded-2xl p-5 border border-[#30363d] space-y-3">
-          <div class="flex items-center justify-between border-b border-[#30363d] pb-2">
-            <h4 class="font-heading font-bold text-white text-sm flex items-center gap-2">
-              <i class="fa-solid fa-table-cells text-electricIce"></i>
+        <div class="card-lab rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between border-b border-labBorder pb-2">
+            <h4 class="font-heading font-bold text-labTextPrimary text-sm flex items-center gap-2">
+              <i class="fa-solid fa-table-cells text-labIndigo"></i>
               <span>Heatmap des Têtes d'Attention (8×8)</span>
             </h4>
-            <span class="text-[10px] font-mono text-slate-400">Couche 12 • Softmax</span>
+            <span class="text-[10px] font-mono text-labTextMuted">Couche 12 • Softmax</span>
           </div>
 
-          <div class="grid grid-cols-8 gap-1 p-2 bg-obsidianDark rounded-xl border border-[#30363d]" id="attentionGrid">
+          <div class="grid grid-cols-8 gap-1 p-2 bg-slate-50 rounded-xl border border-labBorder" id="attentionGrid">
             <!-- Généré par JS -->
           </div>
 
-          <p class="text-[11px] text-slate-400 font-light leading-relaxed">
+          <p class="text-[11px] text-labTextSecondary font-light leading-relaxed">
             Alignement spectral des représentations : les blocs diagonaux concentrent la masse d'attention sur les concepts factuels avérés.
           </p>
         </div>
 
         <!-- COURBE DE CONVERGENCE INFONCE -->
-        <div class="glass-research rounded-2xl p-5 border border-[#30363d] space-y-3">
-          <div class="flex items-center justify-between border-b border-[#30363d] pb-2">
-            <h4 class="font-heading font-bold text-white text-sm flex items-center gap-2">
-              <i class="fa-solid fa-wave-square text-quantumLilac"></i>
+        <div class="card-lab rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between border-b border-labBorder pb-2">
+            <h4 class="font-heading font-bold text-labTextPrimary text-sm flex items-center gap-2">
+              <i class="fa-solid fa-wave-square text-labViolet"></i>
               <span>Convergence Contrastive (InfoNCE Loss)</span>
             </h4>
-            <span class="text-[10px] font-mono text-quantumLilac font-bold">1 000 Époques</span>
+            <span class="text-[10px] font-mono text-labViolet font-bold">1 000 Époques</span>
           </div>
 
-          <div class="relative bg-obsidianDark rounded-xl border border-[#30363d] h-[130px] p-2">
+          <div class="relative bg-slate-50 rounded-xl border border-labBorder h-[130px] p-2">
             <canvas id="lossCanvas" width="400" height="110" class="w-full h-full"></canvas>
           </div>
         </div>
@@ -324,25 +337,23 @@
 
     </div>
 
-
-
   </main>
 
-  <!-- PIED DE PAGE TECHNIQUE -->
-  <footer class="border-t border-[#30363d] bg-obsidianDark/95 py-6 text-xs text-slate-400 font-mono mt-auto">
+  <!-- PIED DE PAGE TECHNIQUE BLANC -->
+  <footer class="border-t border-labBorder bg-white py-6 text-xs text-labTextMuted font-mono mt-auto">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div>
-        <span class="text-pureColdWhite font-medium">Developpé par Saubaber Longang Gamo (Ph.D.)</span>
+        <span class="text-labTextPrimary font-medium">Developpé par Saubaber Longang Gamo (Ph.D.)</span>
       </div>
       <div class="flex items-center gap-4">
-        <a href="https://www.linkedin.com/in/saubaber-longang-18416216a" target="_blank" class="hover:text-electricIce transition-colors">LinkedIn</a>
-        <span class="text-slate-600">•</span>
+        <a href="https://www.linkedin.com/in/saubaber-longang-18416216a" target="_blank" class="hover:text-labIndigo transition-colors">LinkedIn</a>
+        <span class="text-slate-300">•</span>
         <span>Axe 3 : Recherche & Core ML (R&D)</span>
       </div>
     </div>
   </footer>
 
-  <!-- SCRIPT LOGIQUE GRAPHIQUE & MANIFOLD -->
+  <!-- SCRIPT LOGIQUE GRAPHIQUE & MANIFOLD EN MODE LAB BLANC -->
   <script>
     let currentAlgorithm = 'gmm'; // 'gmm' ou 'kmeans'
     let points = [];
@@ -352,11 +363,11 @@
       const bGMM = document.getElementById('btnGMM');
       const bKM = document.getElementById('btnKMeans');
       if (algo === 'gmm') {
-        bGMM.className = "px-3 py-1 rounded-lg bg-electricIce text-obsidianDark font-bold transition-all";
-        bKM.className = "px-3 py-1 rounded-lg text-slate-400 hover:text-white transition-all";
+        bGMM.className = "px-3 py-1 rounded-lg bg-labIndigo text-white font-bold transition-all shadow-sm";
+        bKM.className = "px-3 py-1 rounded-lg text-labTextSecondary hover:text-labTextPrimary transition-all";
       } else {
-        bKM.className = "px-3 py-1 rounded-lg bg-electricIce text-obsidianDark font-bold transition-all";
-        bGMM.className = "px-3 py-1 rounded-lg text-slate-400 hover:text-white transition-all";
+        bKM.className = "px-3 py-1 rounded-lg bg-labIndigo text-white font-bold transition-all shadow-sm";
+        bGMM.className = "px-3 py-1 rounded-lg text-labTextSecondary hover:text-labTextPrimary transition-all";
       }
       drawManifold();
     }
@@ -400,10 +411,12 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const entropyCutoff = parseFloat(document.getElementById('sliderEntropy').value) / 100;
-      const clusterColors = ['#58a6ff', '#bc8cff', '#3fb950', '#f0883e', '#79c0ff', '#d2a8ff'];
+      
+      // Couleurs des clusters nettes et éclatantes sur fond blanc
+      const clusterColors = ['#4f46e5', '#7c3aed', '#059669', '#d97706', '#0284c7', '#db2777'];
 
-      // Grille mathématique
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+      // Grille mathématique sur fond blanc
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.05)';
       ctx.lineWidth = 1;
       for (let x = 0; x < canvas.width; x += 40) {
         ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
@@ -414,23 +427,26 @@
 
       let hallucinationCount = 0;
 
-      // Dessin des points
+      // Dessin des points d'embeddings
       points.forEach(p => {
         const isHallucination = p.entropy > entropyCutoff;
         if (isHallucination) hallucinationCount++;
 
         ctx.beginPath();
-        ctx.arc(p.x, p.y, isHallucination ? 4.5 : 3, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, isHallucination ? 4.5 : 3.5, 0, Math.PI * 2);
 
         if (isHallucination) {
-          ctx.fillStyle = '#f85149';
+          ctx.fillStyle = '#dc2626';
           ctx.fill();
-          ctx.strokeStyle = 'rgba(248, 81, 73, 0.5)';
-          ctx.lineWidth = 2;
+          ctx.strokeStyle = 'rgba(220, 38, 38, 0.4)';
+          ctx.lineWidth = 2.5;
           ctx.stroke();
         } else {
           ctx.fillStyle = clusterColors[p.cluster % clusterColors.length];
           ctx.fill();
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
         }
       });
 
@@ -466,11 +482,11 @@
         const row = Math.floor(i / 8);
         const col = i % 8;
         const diagDist = Math.abs(row - col);
-        const intensity = Math.max(0.08, (1 - (diagDist / 5.5)) + (Math.random() * 0.15));
+        const intensity = Math.max(0.10, (1 - (diagDist / 5.5)) + (Math.random() * 0.15));
         
         const cell = document.createElement('div');
-        cell.className = "h-4 rounded-sm transition-all hover:scale-125 cursor-pointer";
-        cell.style.backgroundColor = `rgba(88, 166, 255, ${intensity.toFixed(2)})`;
+        cell.className = "h-4 rounded-sm transition-all hover:scale-125 cursor-pointer shadow-2xs";
+        cell.style.backgroundColor = `rgba(79, 70, 229, ${intensity.toFixed(2)})`;
         cell.title = `Tête [${row}, ${col}] : ${(intensity * 0.95).toFixed(3)}`;
         container.appendChild(cell);
       }
@@ -483,7 +499,7 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       ctx.beginPath();
-      ctx.strokeStyle = '#bc8cff';
+      ctx.strokeStyle = '#7c3aed';
       ctx.lineWidth = 2.5;
 
       const nPoints = 50;
