@@ -13,9 +13,9 @@
       theme: {
         extend: {
           colors: {
-            // PALETTE OFFICIELLE COOLORS : https://coolors.co/0d1117-161b22-58a6ff-bc8cff-f0f6fc
-            obsidianDark: '#0d1117',   // Fond principal recherche sobre
-            slateCard: '#161b22',      // Fond des conteneurs et cartes
+            // PALETTE R&D CORE ML / NOIR COSMIQUE
+            obsidianDark: '#06070a',   // Fond principal noir cosmique profond
+            slateCard: '#131822',      // Fond des conteneurs et cartes
             electricIce: '#58a6ff',    // Ice Blue / Embeddings et vecteurs actifs
             quantumLilac: '#bc8cff',   // Quantum Lilac / Centroïdes & clusters
             pureColdWhite: '#f0f6fc',  // Typographie haute fidélité
@@ -46,7 +46,7 @@
   <!-- KaTeX pour le rendu officiel des formules ML LaTeX -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, { ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code', 'canvas'] });"></script>
 
   <style>
     .glass-research {
@@ -86,16 +86,6 @@
       </div>
 
       <div class="flex items-center gap-4">
-        <!-- Palette Badge Preview Coolors -->
-        <a href="https://coolors.co/0d1117-161b22-58a6ff-bc8cff-f0f6fc" target="_blank" class="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#30363d] bg-slateCard text-[10px] font-mono text-pureColdWhite hover:border-electricIce transition-colors">
-          <span class="w-2.5 h-2.5 rounded-full" style="background-color: #0d1117;"></span>
-          <span class="w-2.5 h-2.5 rounded-full" style="background-color: #161b22;"></span>
-          <span class="w-2.5 h-2.5 rounded-full" style="background-color: #58a6ff;"></span>
-          <span class="w-2.5 h-2.5 rounded-full" style="background-color: #bc8cff;"></span>
-          <span class="w-2.5 h-2.5 rounded-full" style="background-color: #f0f6fc;"></span>
-          <span class="ml-1 text-electricIce font-semibold">Palette Coolors AI</span>
-        </a>
-
         <div class="hidden sm:flex items-center gap-2 text-xs font-mono bg-slateCard px-3.5 py-1.5 rounded-full border border-[#30363d]">
           <span class="w-2 h-2 rounded-full bg-metricGreen animate-pulse"></span>
           <span>Agent Autonome <em>Antigravity</em> : Actif</span>
@@ -283,7 +273,7 @@
         <!-- METRICS DE QUALITÉ GÉOMÉTRIQUE -->
         <div class="grid grid-cols-3 gap-3 font-mono">
           <div class="glass-research p-3.5 rounded-xl border border-[#30363d] text-center">
-            <span class="text-[10px] text-slate-400 block uppercase">Silhouette $s$</span>
+            <span class="text-[10px] text-slate-400 block uppercase">Silhouette <em>s</em></span>
             <span id="metricSilhouette" class="text-base font-bold text-electricIce">0.724</span>
           </div>
           <div class="glass-research p-3.5 rounded-xl border border-[#30363d] text-center">
@@ -334,19 +324,7 @@
 
     </div>
 
-    <!-- COOLORS PALETTE WIDGET OFFICIEL EMBEDDED -->
-    <div class="glass-research rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-6 border border-[#30363d]">
-      <div class="space-y-1 text-center sm:text-left">
-        <h4 class="font-heading font-bold text-white text-base">Charte Graphique & Palette Coolors AI Research</h4>
-        <p class="text-xs text-slate-400 font-mono">Palette officielle : <a href="https://coolors.co/0d1117-161b22-58a6ff-bc8cff-f0f6fc" target="_blank" class="text-electricIce underline hover:text-white">coolors.co/0d1117-161b22-58a6ff-bc8cff-f0f6fc</a></p>
-      </div>
 
-      <!-- Coolors Palette Widget -->
-      <div class="flex items-center">
-        <script src="https://coolors.co/palette-widget/widget.js"></script>
-        <script data-id="07030588748587463">new CoolorsPaletteWidget("07030588748587463", ["0d1117","161b22","58a6ff","bc8cff","f0f6fc"]); </script>
-      </div>
-    </div>
 
   </main>
 

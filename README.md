@@ -5,20 +5,17 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-58a6ff.svg)](LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
-[![Palette Coolors](https://img.shields.io/badge/Coolors%20Palette-0d1117%20%7C%20161b22%20%7C%2058a6ff%20%7C%20bc8cff%20%7C%20f0f6fc-58a6ff)](https://coolors.co/0d1117-161b22-58a6ff-bc8cff-f0f6fc)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-58a6ff?logo=github)](https://lynshames-sketch.github.io/Clustering_dashboard/)
 
 ---
 
-## 🎨 Charte Graphique & Palette Coolors AI Research
+## 🎨 Charte Graphique : Espace Latent & R&D
 
-Palette officielle : 🔗 **[https://coolors.co/0d1117-161b22-58a6ff-bc8cff-f0f6fc](https://coolors.co/0d1117-161b22-58a6ff-bc8cff-f0f6fc)**
-
-* `#0d1117` : Obsidian Dark / Fond de recherche sobre
-* `#161b22` : Slate Card / Conteneurs & panneaux
-* `#58a6ff` : Electric Ice Blue / Embeddings, vecteurs & attention
-* `#bc8cff` : Quantum Lilac / Centroïdes, clusters & convergence
-* `#f0f6fc` : Pure Cold White / Typographie scientifique haute netteté
+* `#06070a` : **Noir Cosmique Profond** (Fond d'immersion de recherche)
+* `#131822` : **Ardoise Espace** (Conteneurs & panneaux)
+* `#58a6ff` : **Bleu Glacé Électrique** (Embeddings, vecteurs & attention)
+* `#bc8cff` : **Lilas Quantique** (Centroïdes, clusters & convergence)
+* `#f0f6fc` : **Blanc Froid Pur** (Typographie scientifique haute netteté)
 
 ---
 
