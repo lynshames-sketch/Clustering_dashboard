@@ -1,0 +1,4 @@
+# Core ML & Clustering Dashboard
+# Python 3.10+ (Standard libraries: math, json, sys, random)
+numpy>=1.24.0
+httpx>=0.27.0

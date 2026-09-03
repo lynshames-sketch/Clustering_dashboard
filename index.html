@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Core ML & Latent Space Clustering Suite | Saubaber Longang Gamo (Ph.D.)</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            deepVoid: '#040711',
+            glassBg: 'rgba(15, 23, 42, 0.45)',
+            glassBorder: 'rgba(255, 255, 255, 0.08)',
+            neonCyan: '#06b6d4',
+            neonViolet: '#8b5cf6',
+            neonEmerald: '#10b981',
+            neonRose: '#f43f5e'
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+            heading: ['"Outfit"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    /* Glassmorphism translucide et épuré */
+    .glass-panel {
+      background: rgba(13, 20, 36, 0.45);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    
+    .glass-panel-subtle {
+      background: rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .glow-cyan {
+      box-shadow: 0 0 35px -5px rgba(6, 182, 212, 0.25);
+    }
+    .glow-violet {
+      box-shadow: 0 0 35px -5px rgba(139, 92, 246, 0.25);
+    }
+
+    /* Scrollbar invisible et fluide */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+  </style>
+</head>
+<body class="bg-deepVoid text-slate-100 font-sans min-h-screen antialiased flex flex-col relative selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden">
+
+  <!-- HALOS LUMINEUX D'ARRIÈRE-PLAN (Style épuré & transparent) -->
+  <div class="fixed top-[-10%] left-[-5%] w-[600px] h-[600px] rounded-full bg-cyan-600/10 blur-[130px] pointer-events-none -z-10"></div>
+  <div class="fixed bottom-[-10%] right-[-5%] w-[700px] h-[700px] rounded-full bg-violet-600/10 blur-[150px] pointer-events-none -z-10"></div>
+  <div class="fixed top-[40%] right-[30%] w-[500px] h-[500px] rounded-full bg-emerald-600/5 blur-[120px] pointer-events-none -z-10"></div>
+
+  <!-- NAVIGATION HEADER ÉPURÉE -->
+  <header class="border-b border-white/[0.06] bg-deepVoid/70 backdrop-blur-xl sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center text-cyan-400 font-mono text-base shadow-inner">
+          <i class="fa-solid fa-cube"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-heading font-bold text-base tracking-wide text-white">LATENT SPACE & CLUSTERING SUITE</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 font-mono">R&D • CORE ML</span>
+          </div>
+          <p class="text-[11px] text-slate-400 font-light">Espace Latent • Tenseurs PyTorch • Réduction d'Hallucinations</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-400 bg-white/[0.03] border border-white/[0.08] px-3 py-1.5 rounded-full">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span>Antigravity MCP Agent : Actif</span>
+        </div>
+        <a href="../prudential-dashboard/index.html" class="text-xs font-medium text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/10 hover:bg-white/5">
+          <i class="fa-solid fa-arrow-left text-[10px]"></i>
+          <span>Prudential Risk</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENU PRINCIPAL -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
+
+    <!-- BANDEAU TITRE & THÉORIE MATHÉMATIQUE -->
+    <div class="glass-panel rounded-2xl p-6 relative overflow-hidden">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+        <div class="space-y-2 max-w-3xl">
+          <div class="inline-flex items-center gap-2 text-xs font-mono text-cyan-400 uppercase tracking-wider">
+            <i class="fa-solid fa-atom"></i>
+            <span>Architecture & Inférence Non-Supervisée</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold text-white tracking-tight">
+            Exploration de la Topologie Latente & Filtrage d'Entropie
+          </h2>
+          <p class="text-sm text-slate-300 font-light leading-relaxed">
+            Visualisation géométrique des représentations vectorielles denses ($\mathbb{R}^{768}$). Décomposition des centroïdes via mélanges gaussiens (GMM), détection d'outliers et convergence contrastive des tenseurs d'attention.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap lg:flex-nowrap items-center gap-3">
+          <div class="glass-panel-subtle px-4 py-3 rounded-xl border border-white/10 text-center min-w-[120px]">
+            <span class="text-[10px] font-mono text-slate-400 block uppercase">Silhouette $s$</span>
+            <span id="metricSilhouette" class="text-lg font-mono font-bold text-cyan-300">0.724</span>
+          </div>
+          <div class="glass-panel-subtle px-4 py-3 rounded-xl border border-white/10 text-center min-w-[120px]">
+            <span class="text-[10px] font-mono text-slate-400 block uppercase">Davies-Bouldin</span>
+            <span id="metricDB" class="text-lg font-mono font-bold text-violet-300">0.648</span>
+          </div>
+          <div class="glass-panel-subtle px-4 py-3 rounded-xl border border-white/10 text-center min-w-[120px]">
+            <span class="text-[10px] font-mono text-slate-400 block uppercase">Inertie Expliquée</span>
+            <span id="metricInertia" class="text-lg font-mono font-bold text-emerald-300">89.4 %</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRILLE PRINCIPALE : 2 COLONNES INTERACTIVES -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- COLONNE GAUCHE : ESPACE LATENT & CANVAS DE CLUSTERING (7 Cols) -->
+      <div class="lg:col-span-7 glass-panel rounded-2xl p-6 space-y-5 shadow-2xl">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.06] pb-4">
+          <div>
+            <h3 class="font-heading font-bold text-white text-lg flex items-center gap-2">
+              <i class="fa-solid fa-circle-nodes text-cyan-400"></i>
+              <span>Projection 2D des Embeddings</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-light">Espace vectoriel projeté ($t\text{-SNE / UMAP manifold}$)</p>
+          </div>
+
+          <!-- Sélecteur d'Algorithme -->
+          <div class="inline-flex rounded-xl p-1 bg-white/[0.03] border border-white/10 text-xs font-mono">
+            <button id="btnGMM" onclick="setAlgorithm('gmm')" class="px-3 py-1 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-medium transition-all">GMM (Densité)</button>
+            <button id="btnKMeans" onclick="setAlgorithm('kmeans')" class="px-3 py-1 rounded-lg text-slate-400 hover:text-white transition-all">K-Means</button>
+          </div>
+        </div>
+
+        <!-- CANVAS INTERACTIF -->
+        <div class="relative bg-black/40 rounded-xl border border-white/[0.08] h-[390px] overflow-hidden group">
+          <canvas id="latentCanvas" width="680" height="390" class="w-full h-full cursor-crosshair"></canvas>
+          
+          <!-- Légende Dynamique Flottante -->
+          <div class="absolute bottom-3 left-3 glass-panel-subtle px-3 py-2 rounded-lg border border-white/10 text-[10px] font-mono space-y-1 backdrop-blur-md">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+              <span class="text-slate-300">Inférence Factuelle (Faible Entropie)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-rose-500/30"></span>
+              <span class="text-rose-300">Dérive Sémantique / Hallucination</span>
+            </div>
+          </div>
+
+          <div class="absolute top-3 right-3 text-[10px] font-mono text-slate-500 bg-deepVoid/60 px-2.5 py-1 rounded border border-white/5">
+            Projection : $z \sim \mathcal{N}(\mu_k, \Sigma_k)$
+          </div>
+        </div>
+
+        <!-- CONTROLS D'HYPERPARAMÈTRES -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+          <!-- Slider K Clusters -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between text-xs font-mono">
+              <span class="text-slate-400">Clusters ($k$)</span>
+              <span id="valK" class="text-cyan-400 font-bold">4</span>
+            </div>
+            <input type="range" id="inputK" min="2" max="8" step="1" value="4" class="w-full accent-cyan-400 bg-white/10 h-1.5 rounded cursor-pointer" oninput="updateClustering()">
+          </div>
+
+          <!-- Slider Température / Dispersion -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between text-xs font-mono">
+              <span class="text-slate-400">Dispersion ($\sigma$)</span>
+              <span id="valNoise" class="text-violet-400 font-bold">0.14</span>
+            </div>
+            <input type="range" id="inputNoise" min="0.05" max="0.30" step="0.01" value="0.14" class="w-full accent-violet-400 bg-white/10 h-1.5 rounded cursor-pointer" oninput="updateClustering()">
+          </div>
+
+          <!-- Toggle Filtrage Anti-Hallucination -->
+          <div class="flex flex-col justify-end pb-0.5">
+            <button id="toggleFilterBtn" onclick="toggleFilter()" class="w-full py-1.5 px-3 rounded-lg border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] text-xs font-mono flex items-center justify-center gap-2 transition-all">
+              <span id="filterDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+              <span id="filterText" class="text-slate-300">Filtre Hallucinations</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- COLONNE DROITE : TENSEURS & CONVERGENCE PYTORCH (5 Cols) -->
+      <div class="lg:col-span-5 space-y-6">
+
+        <!-- CARTE INSPECTEUR DE TENSEUR (STITCH VIBE DESIGN) -->
+        <div class="glass-panel rounded-2xl p-5 space-y-3 shadow-xl">
+          <div class="flex items-center justify-between border-b border-white/[0.06] pb-3">
+            <h4 class="font-heading font-bold text-white text-sm flex items-center gap-2">
+              <i class="fa-solid fa-layer-group text-violet-400"></i>
+              <span>Inspection de Tenseur (PyTorch Core)</span>
+            </h4>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-violet-500/10 text-violet-300 border border-violet-500/20">cuda:0</span>
+          </div>
+
+          <div class="p-3 rounded-xl bg-black/40 border border-white/[0.06] font-mono text-[11px] space-y-1.5">
+            <div class="text-slate-400">
+              <span class="text-violet-400">tensor_emb</span> = torch.randn(batch_size=64, seq_len=128, d_model=768)
+            </div>
+            <div class="flex justify-between text-slate-300 pt-1 border-t border-white/[0.04]">
+              <span>Shape : <strong class="text-white">[64, 128, 768]</strong></span>
+              <span>Dtype : <strong class="text-cyan-400">bfloat16</strong></span>
+            </div>
+            <div class="flex justify-between text-slate-300">
+              <span>Mémoire GPU : <strong class="text-emerald-400">12.58 Mo</strong></span>
+              <span>Norme L2 : <strong class="text-violet-300">1.000 (Unitary)</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARTE MATRICE D'ATTENTION MULTI-HEAD -->
+        <div class="glass-panel rounded-2xl p-5 space-y-3 shadow-xl">
+          <div class="flex items-center justify-between">
+            <h4 class="font-heading font-bold text-white text-sm flex items-center gap-2">
+              <i class="fa-solid fa-braille text-cyan-400"></i>
+              <span>Poids d'Attention Multi-Head ($\text{Softmax}(QK^T/\sqrt{d})$)</span>
+            </h4>
+            <span class="text-[10px] font-mono text-slate-400">Head #4</span>
+          </div>
+
+          <!-- Heatmap d'Attention 8x8 stylisée -->
+          <div class="p-3 rounded-xl bg-black/30 border border-white/[0.06]">
+            <div id="attentionGrid" class="grid grid-cols-8 gap-1"></div>
+            <div class="flex justify-between text-[10px] font-mono text-slate-500 mt-2">
+              <span>0.0 (Orthogonal)</span>
+              <span id="hoverScore" class="text-cyan-300">Survolez une cellule</span>
+              <span>1.0 (Aligné)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARTE COURBE DE CONVERGENCE & STREAMING DE LOGS -->
+        <div class="glass-panel rounded-2xl p-5 space-y-3 shadow-xl">
+          <div class="flex items-center justify-between">
+            <h4 class="font-heading font-bold text-white text-sm flex items-center gap-2">
+              <i class="fa-solid fa-chart-line text-emerald-400"></i>
+              <span>Convergence Contrastive (InfoNCE Loss)</span>
+            </h4>
+            <span class="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Convergent</span>
+            </span>
+          </div>
+
+          <div class="h-[110px] bg-black/40 rounded-xl border border-white/[0.06] p-2 relative overflow-hidden">
+            <canvas id="lossCanvas" width="380" height="95" class="w-full h-full"></canvas>
+          </div>
+
+          <div class="flex justify-between text-[11px] font-mono text-slate-400">
+            <span>Loss finale : <strong class="text-white font-bold" id="finalLossVal">0.324</strong></span>
+            <span>Entropie : <strong class="text-cyan-400 font-bold" id="finalEntropyVal">0.142 nats</strong></span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- TANDEM GOOGLE STITCH & GOOGLE ANTIGRAVITY -->
+    <div class="glass-panel-subtle rounded-2xl p-5 border border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-400">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center">
+          <i class="fa-solid fa-microchip"></i>
+        </div>
+        <div>
+          <span class="text-white font-semibold">Tandem Stitch & Antigravity IDE</span> : Interface réactive haute performance avec pipeline d'agents autonomes pour l'orchestration PyTorch et le protocole MCP.
+        </div>
+      </div>
+      <div class="flex gap-4">
+        <span class="text-slate-300">PyTorch 2.4</span>
+        <span class="text-slate-300">UMAP / t-SNE</span>
+        <span class="text-slate-300">CUDA FP16</span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- PIED DE PAGE TECHNIQUE ÉPURÉ -->
+  <footer class="border-t border-white/[0.06] bg-deepVoid/80 py-6 text-xs text-slate-500 font-mono mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <span class="text-slate-400">Developpé par Saubaber Longang Gamo (Ph.D.)</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="https://www.linkedin.com/in/saubaber-longang-18416216a" target="_blank" class="hover:text-cyan-400 transition-colors">LinkedIn</a>
+        <span class="text-slate-600">•</span>
+        <span>Recherche R&D • Core ML & Espace Latent</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MOTEUR INTERACTIF JAVASCRIPT -->
+  <script>
+    let currentAlgorithm = 'gmm';
+    let filterHallucinations = false;
+    let points = [];
+    let centers = [
+      { x: -0.52, y: 0.48, color: '#06b6d4', name: 'Inférence Causale' },
+      { x: 0.48, y: 0.52, color: '#8b5cf6', name: 'Modélisation Risque' },
+      { x: 0.42, y: -0.42, color: '#10b981', name: 'Surveillance AML' },
+      { x: -0.48, y: -0.46, color: '#3b82f6', name: 'Macroéconomie' },
+      { x: 0.00, y: 0.62, color: '#ec4899', name: 'Inférence Bayésienne' },
+      { x: 0.62, y: 0.00, color: '#f59e0b', name: 'Évaluation GAR' },
+      { x: -0.62, y: 0.00, color: '#14b8a6', name: 'Séries Temporelles' },
+      { x: 0.00, y: -0.62, color: '#6366f1', name: 'Deep Learning' }
+    ];
+
+    function setAlgorithm(algo) {
+      currentAlgorithm = algo;
+      const bGmm = document.getElementById('btnGMM');
+      const bKm = document.getElementById('btnKMeans');
+      if (algo === 'gmm') {
+        bGmm.className = "px-3 py-1 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-medium transition-all";
+        bKm.className = "px-3 py-1 rounded-lg text-slate-400 hover:text-white transition-all";
+      } else {
+        bKm.className = "px-3 py-1 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-medium transition-all";
+        bGmm.className = "px-3 py-1 rounded-lg text-slate-400 hover:text-white transition-all";
+      }
+      drawLatentSpace();
+    }
+
+    function toggleFilter() {
+      filterHallucinations = !filterHallucinations;
+      const dot = document.getElementById('filterDot');
+      const text = document.getElementById('filterText');
+      const btn = document.getElementById('toggleFilterBtn');
+
+      if (filterHallucinations) {
+        dot.className = "w-2 h-2 rounded-full bg-rose-500 animate-pulse";
+        text.className = "text-rose-300 font-semibold";
+        btn.className = "w-full py-1.5 px-3 rounded-lg border border-rose-500/40 bg-rose-500/10 text-xs font-mono flex items-center justify-center gap-2 transition-all";
+      } else {
+        dot.className = "w-2 h-2 rounded-full bg-slate-500";
+        text.className = "text-slate-300";
+        btn.className = "w-full py-1.5 px-3 rounded-lg border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] text-xs font-mono flex items-center justify-center gap-2 transition-all";
+      }
+      drawLatentSpace();
+    }
+
+    function generatePoints(k, noise) {
+      points = [];
+      const activeCenters = centers.slice(0, k);
+      const nPerCluster = Math.floor(220 / k);
+
+      activeCenters.forEach((c, cIdx) => {
+        for (let i = 0; i < nPerCluster; i++) {
+          // Box-Muller normal distribution
+          const u1 = Math.max(Math.random(), 1e-7);
+          const u2 = Math.random();
+          const z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+          const z1 = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(2.0 * Math.PI * u2);
+
+          const isOutlier = Math.random() < 0.08;
+          let px, py, entropy;
+
+          if (isOutlier) {
+            px = (Math.random() - 0.5) * 1.7;
+            py = (Math.random() - 0.5) * 1.7;
+            entropy = 0.82 + Math.random() * 0.16;
+          } else {
+            px = c.x + z0 * noise;
+            py = c.y + z1 * noise;
+            entropy = 0.10 + Math.random() * 0.22;
+          }
+
+          points.push({
+            x: px,
+            y: py,
+            cluster: cIdx,
+            color: c.color,
+            isOutlier: isOutlier,
+            entropy: entropy
+          });
+        }
+      });
+    }
+
+    function drawLatentSpace() {
+      const canvas = document.getElementById('latentCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+      const scale = 200;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Draw subtle grid axes
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(cx, 0); ctx.lineTo(cx, h);
+      ctx.moveTo(0, cy); ctx.lineTo(w, cy);
+      ctx.stroke();
+
+      const k = parseInt(document.getElementById('inputK').value);
+      const activeCenters = centers.slice(0, k);
+
+      // Draw Density Contours (GMM or K-Means hulls)
+      activeCenters.forEach(c => {
+        const sx = cx + c.x * scale;
+        const sy = cy - c.y * scale;
+
+        const grad = ctx.createRadialGradient(sx, sy, 5, sx, sy, currentAlgorithm === 'gmm' ? 75 : 55);
+        grad.addColorStop(0, c.color + '22');
+        grad.addColorStop(1, 'transparent');
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(sx, sy, currentAlgorithm === 'gmm' ? 75 : 55, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Center marker
+        ctx.fillStyle = c.color;
+        ctx.beginPath();
+        ctx.arc(sx, sy, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Draw Data points
+      points.forEach(p => {
+        if (filterHallucinations && p.isOutlier) {
+          return; // Filtré hors du manifold
+        }
+
+        const sx = cx + p.x * scale;
+        const sy = cy - p.y * scale;
+
+        if (p.isOutlier) {
+          // Outlier non filtré (mise en valeur)
+          ctx.beginPath();
+          ctx.arc(sx, sy, 4.5, 0, Math.PI * 2);
+          ctx.fillStyle = '#f43f5e';
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(244, 63, 94, 0.6)';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.arc(sx, sy, 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = p.color + (currentAlgorithm === 'gmm' ? 'cc' : 'ff');
+          ctx.fill();
+        }
+      });
+    }
+
+    function updateClustering() {
+      const k = parseInt(document.getElementById('inputK').value);
+      const noise = parseFloat(document.getElementById('inputNoise').value);
+
+      document.getElementById('valK').textContent = k;
+      document.getElementById('valNoise').textContent = noise.toFixed(2);
+
+      generatePoints(k, noise);
+      drawLatentSpace();
+
+      // Update Math Metrics
+      const silhouette = (0.78 - k * 0.035 - noise * 0.4 + Math.random() * 0.02).toFixed(3);
+      const db = (0.45 + k * 0.07 + noise * 0.35).toFixed(3);
+      const inertia = Math.min(Math.max((94 - k * 1.5 - noise * 20), 72), 97).toFixed(1);
+
+      document.getElementById('metricSilhouette').textContent = silhouette;
+      document.getElementById('metricDB').textContent = db;
+      document.getElementById('metricInertia').textContent = inertia + ' %';
+    }
+
+    // HEATMAP D'ATTENTION 8x8
+    function generateAttentionGrid() {
+      const grid = document.getElementById('attentionGrid');
+      grid.innerHTML = '';
+      for (let i = 0; i < 64; i++) {
+        const row = Math.floor(i / 8);
+        const col = i % 8;
+        // Diagonale forte + attention sémantique
+        const diagDist = Math.abs(row - col);
+        const weight = Math.max(0.04, Math.min(0.96, Math.exp(-diagDist * 0.6) + (Math.random() * 0.15 - 0.05)));
+
+        const cell = document.createElement('div');
+        cell.className = 'w-full aspect-square rounded-[3px] cursor-pointer transition-all duration-150 hover:ring-2 hover:ring-cyan-300';
+        cell.style.backgroundColor = `rgba(6, 182, 212, ${weight.toFixed(3)})`;
+        
+        cell.onmouseenter = () => {
+          document.getElementById('hoverScore').textContent = `Token [${row}] → [${col}] : α = ${weight.toFixed(3)}`;
+        };
+        cell.onmouseleave = () => {
+          document.getElementById('hoverScore').textContent = 'Survolez une cellule';
+        };
+
+        grid.appendChild(cell);
+      }
+    }
+
+    // LOSS CONVERGENCE CANVAS
+    function drawLossCurve() {
+      const canvas = document.getElementById('lossCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Tracé courbe
+      ctx.beginPath();
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = 2;
+
+      for (let x = 0; x < w; x++) {
+        const t = x / w;
+        const loss = 0.30 + 2.8 * Math.exp(-t * 4.2) + Math.sin(t * 30) * 0.03;
+        const y = h - (loss / 3.2) * (h - 15) - 8;
+
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // Dégradé sous la courbe
+      ctx.lineTo(w, h);
+      ctx.lineTo(0, h);
+      ctx.closePath();
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, 'rgba(16, 185, 129, 0.25)');
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad;
+      ctx.fill();
+    }
+
+    // Initialisation au chargement
+    window.onload = function() {
+      updateClustering();
+      generateAttentionGrid();
+      drawLossCurve();
+    };
+  </script>
+
+</body>
+</html>
