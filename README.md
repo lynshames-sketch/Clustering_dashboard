@@ -1,63 +1,48 @@
-# Core ML & Latent Space Clustering Suite (`Clustering_dashboard`)
+# Suite R&D Core ML & Espace Latent (`Clustering_dashboard`)
 
-> **Exploration de l'Espace Latent, Visualiseur de Tenseurs & Réduction d'Hallucinations**  
+> **Exploration de la Topologie Latente (*GMM* • *k-means* • *PyTorch*) & Réduction d'Hallucinations par Entropie**  
 > **Auteur :** Saubaber Longang Gamo (Ph.D. en Économie • Modélisation Économétrique & IA)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-58a6ff.svg)](LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-06b6d4?logo=github)](https://lynshames-sketch.github.io/Clustering_dashboard/)
+[![Palette Coolors](https://img.shields.io/badge/Coolors%20Palette-0d1117%20%7C%20161b22%20%7C%2058a6ff%20%7C%20bc8cff%20%7C%20f0f6fc-58a6ff)](https://coolors.co/0d1117-161b22-58a6ff-bc8cff-f0f6fc)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-58a6ff?logo=github)](https://lynshames-sketch.github.io/Clustering_dashboard/)
 
 ---
 
-## 🔬 Présentation de l'Architecture (R&D / Core ML)
+## 🎨 Charte Graphique & Palette Coolors AI Research
 
-Ce dashboard s'inscrit dans l'axe **3. Recherche & Core ML (R&D)** destiné aux laboratoires de recherche, universités et postes de Senior Data Scientist.
+Palette officielle : 🔗 **[https://coolors.co/0d1117-161b22-58a6ff-bc8cff-f0f6fc](https://coolors.co/0d1117-161b22-58a6ff-bc8cff-f0f6fc)**
 
-Il met en œuvre le tandem technologique :
-* **Google Stitch (Vibe Design & Interface Réactive)** : Une interface transparente et épurée en *Glassmorphism* (Tailwind CSS, Canvas HTML5) affichant les cartes d'attention Transformer, la décomposition des tenseurs d'activation et la topologie des clusters.
-* **Google Antigravity (Moteur d'Agents & Inférence)** : Orchestration locale des calculs vectoriels, calcul en temps réel des métriques de géométrie différentielle (Score de Silhouette, Davies-Bouldin) et filtrage des dérives sémantiques (hallucinations).
+* `#0d1117` : Obsidian Dark / Fond de recherche sobre
+* `#161b22` : Slate Card / Conteneurs & panneaux
+* `#58a6ff` : Electric Ice Blue / Embeddings, vecteurs & attention
+* `#bc8cff` : Quantum Lilac / Centroïdes, clusters & convergence
+* `#f0f6fc` : Pure Cold White / Typographie scientifique haute netteté
 
 ---
 
-## 📐 Fondements Mathématiques & Métriques
+## 📐 Spécifications Algorithmiques & Mathématiques ($\LaTeX$)
 
-### 1. Modélisation de l'Espace Latent ($z \in \mathbb{R}^d$)
-- Partitionnement de mélanges gaussiens (GMM) avec estimation de densité :
-  $$p(z) = \sum_{k=1}^K \pi_k \mathcal{N}(z \mid \mu_k, \Sigma_k)$$
-- **Score de Silhouette ($s \in [-1, 1]$)** : Évaluation de la cohésion intra-cluster par rapport à la séparation inter-clusters :
-  $$s(i) = \frac{b(i) - a(i)}{\max(a(i), b(i))}$$
-- **Indice de Davies-Bouldin ($DB$)** : Mesure de similarité moyenne entre chaque cluster et son plus proche voisin.
+### 1. Perte Contrastive (*InfoNCE*)
+$$\mathcal{L}_{\text{InfoNCE}} = -\log \frac{\exp(\mathbf{q} \cdot \mathbf{k}_+ / \tau)}{\sum_{j=1}^K \exp(\mathbf{q} \cdot \mathbf{k}_j / \tau)}$$
 
-### 2. Détection & Filtrage des Hallucinations Sémantiques
-- Calcul de l'entropie prédictive token par token :
-  $$H(X) = -\sum_{i=1}^V p(x_i) \log p(x_i)$$
-- Les représentations situées au-delà du seuil critique d'entropie ($H > \theta$) sont isolées comme dérives hors-distribution et filtrées hors du sous-espace factuel (*manifold*).
+### 2. Coefficient de Silhouette
+$$s(i) = \frac{b(i) - a(i)}{\max(a(i), b(i))}, \quad s(i) \in [-1, 1]$$
 
-### 3. Visualisation de Tenseurs & Matrice d'Attention
-- Inspection interactive des tenseurs PyTorch : `[Batch, Seq_Len, D_model]`
-- Visualisation de la matrice de produit scalaire adouci (*Scaled Dot-Product Attention*) :
-  $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
+### 3. Filtrage Anti-Hallucination par Entropie de Shannon
+$$H(p) = -\sum_{c=1}^C p_c \log_2(p_c) \le H_{\text{seuil}}$$
 
 ---
 
 ## 🚀 Démarrage Rapide
 
-### 1. Cloner le Dépôt
 ```bash
 git clone https://github.com/lynshames-sketch/Clustering_dashboard.git
 cd Clustering_dashboard
-```
-
-### 2. Démarrer le Serveur Local
-```bash
 python -m http.server 8086
 ```
-Puis accédez à : **`http://localhost:8086/`**
-
-### 3. Exécuter le Script d'Évaluation Vectorielle
-```bash
-python clustering_core.py
-```
+Accédez ensuite à : **`http://localhost:8086/`**
 
 ---
 

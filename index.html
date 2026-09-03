@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Core ML & Latent Space Clustering Suite | Saubaber Longang Gamo (Ph.D.)</title>
+  <title>Suite R&D Core ML & Espace Latent (*GMM* • *k-means* • *PyTorch*) | Saubaber Longang Gamo (Ph.D.)</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,16 +13,20 @@
       theme: {
         extend: {
           colors: {
-            deepVoid: '#040711',
-            glassBg: 'rgba(15, 23, 42, 0.45)',
-            glassBorder: 'rgba(255, 255, 255, 0.08)',
-            neonCyan: '#06b6d4',
-            neonViolet: '#8b5cf6',
-            neonEmerald: '#10b981',
-            neonRose: '#f43f5e'
+            // PALETTE OFFICIELLE COOLORS : https://coolors.co/0d1117-161b22-58a6ff-bc8cff-f0f6fc
+            obsidianDark: '#0d1117',   // Fond principal recherche sobre
+            slateCard: '#161b22',      // Fond des conteneurs et cartes
+            electricIce: '#58a6ff',    // Ice Blue / Embeddings et vecteurs actifs
+            quantumLilac: '#bc8cff',   // Quantum Lilac / Centroïdes & clusters
+            pureColdWhite: '#f0f6fc',  // Typographie haute fidélité
+            
+            // ACCENTS TECHNIQUES
+            metricGreen: '#3fb950',
+            metricRed: '#f85149'
           },
           fontFamily: {
             sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Newsreader"', 'Georgia', 'serif'],
             mono: ['"JetBrains Mono"', 'monospace'],
             heading: ['"Outfit"', 'sans-serif']
           }
@@ -34,254 +38,295 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+  <!-- KaTeX pour le rendu officiel des formules ML LaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
   <style>
-    /* Glassmorphism translucide et épuré */
-    .glass-panel {
-      background: rgba(13, 20, 36, 0.45);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.07);
+    .glass-research {
+      background: rgba(22, 27, 34, 0.75);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(88, 166, 255, 0.18);
+      box-shadow: 0 10px 30px -10px rgba(13, 17, 23, 0.8);
     }
-    
-    .glass-panel-subtle {
-      background: rgba(255, 255, 255, 0.02);
+    .glass-research-subtle {
+      background: rgba(240, 246, 252, 0.02);
       backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(188, 140, 255, 0.18);
     }
-
-    .glow-cyan {
-      box-shadow: 0 0 35px -5px rgba(6, 182, 212, 0.25);
-    }
-    .glow-violet {
-      box-shadow: 0 0 35px -5px rgba(139, 92, 246, 0.25);
-    }
-
-    /* Scrollbar invisible et fluide */
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
   </style>
 </head>
-<body class="bg-deepVoid text-slate-100 font-sans min-h-screen antialiased flex flex-col relative selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden">
+<body class="bg-obsidianDark text-pureColdWhite font-sans min-h-screen antialiased flex flex-col selection:bg-electricIce/30 selection:text-white overflow-x-hidden">
 
-  <!-- HALOS LUMINEUX D'ARRIÈRE-PLAN (Style épuré & transparent) -->
-  <div class="fixed top-[-10%] left-[-5%] w-[600px] h-[600px] rounded-full bg-cyan-600/10 blur-[130px] pointer-events-none -z-10"></div>
-  <div class="fixed bottom-[-10%] right-[-5%] w-[700px] h-[700px] rounded-full bg-violet-600/10 blur-[150px] pointer-events-none -z-10"></div>
-  <div class="fixed top-[40%] right-[30%] w-[500px] h-[500px] rounded-full bg-emerald-600/5 blur-[120px] pointer-events-none -z-10"></div>
+  <!-- HALOS VOLUMÉTRIQUES DE FOND RESEARCH AI -->
+  <div class="fixed top-[-10%] left-[-5%] w-[650px] h-[650px] rounded-full bg-electricIce/10 blur-[170px] pointer-events-none -z-10"></div>
+  <div class="fixed bottom-[-10%] right-[-5%] w-[700px] h-[700px] rounded-full bg-quantumLilac/10 blur-[180px] pointer-events-none -z-10"></div>
 
   <!-- NAVIGATION HEADER ÉPURÉE -->
-  <header class="border-b border-white/[0.06] bg-deepVoid/70 backdrop-blur-xl sticky top-0 z-50">
+  <header class="border-b border-[#30363d] bg-obsidianDark/85 backdrop-blur-xl sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center text-cyan-400 font-mono text-base shadow-inner">
+      <div class="flex items-center gap-3.5">
+        <div class="w-9 h-9 rounded-xl bg-electricIce/15 border border-electricIce/35 flex items-center justify-center text-electricIce font-mono text-base shadow-inner">
           <i class="fa-solid fa-cube"></i>
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <span class="font-heading font-bold text-base tracking-wide text-white">LATENT SPACE & CLUSTERING SUITE</span>
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 font-mono">R&D • CORE ML</span>
+            <h1 class="font-heading font-bold text-base md:text-lg tracking-wide text-white">LATENT SPACE & CLUSTERING SUITE</h1>
+            <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-electricIce/15 border border-electricIce/35 text-electricIce font-mono font-semibold">R&D • CORE ML</span>
           </div>
-          <p class="text-[11px] text-slate-400 font-light">Espace Latent • Tenseurs PyTorch • Réduction d'Hallucinations</p>
+          <p class="text-[11px] text-slate-400 font-light">Espace Latent • Tenseurs <em>PyTorch</em> • Réduction d'Hallucinations</p>
         </div>
       </div>
 
       <div class="flex items-center gap-4">
-        <div class="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-400 bg-white/[0.03] border border-white/[0.08] px-3 py-1.5 rounded-full">
-          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-          <span>Antigravity MCP Agent : Actif</span>
-        </div>
-        <a href="../prudential-dashboard/index.html" class="text-xs font-medium text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/10 hover:bg-white/5">
-          <i class="fa-solid fa-arrow-left text-[10px]"></i>
-          <span>Prudential Risk</span>
+        <!-- Palette Badge Preview Coolors -->
+        <a href="https://coolors.co/0d1117-161b22-58a6ff-bc8cff-f0f6fc" target="_blank" class="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#30363d] bg-slateCard text-[10px] font-mono text-pureColdWhite hover:border-electricIce transition-colors">
+          <span class="w-2.5 h-2.5 rounded-full" style="background-color: #0d1117;"></span>
+          <span class="w-2.5 h-2.5 rounded-full" style="background-color: #161b22;"></span>
+          <span class="w-2.5 h-2.5 rounded-full" style="background-color: #58a6ff;"></span>
+          <span class="w-2.5 h-2.5 rounded-full" style="background-color: #bc8cff;"></span>
+          <span class="w-2.5 h-2.5 rounded-full" style="background-color: #f0f6fc;"></span>
+          <span class="ml-1 text-electricIce font-semibold">Palette Coolors AI</span>
         </a>
+
+        <div class="hidden sm:flex items-center gap-2 text-xs font-mono bg-slateCard px-3.5 py-1.5 rounded-full border border-[#30363d]">
+          <span class="w-2 h-2 rounded-full bg-metricGreen animate-pulse"></span>
+          <span>Agent Autonome <em>Antigravity</em> : Actif</span>
+        </div>
       </div>
     </div>
   </header>
 
   <!-- CONTENU PRINCIPAL -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-8">
 
-    <!-- BANDEAU TITRE & THÉORIE MATHÉMATIQUE -->
-    <div class="glass-panel rounded-2xl p-6 relative overflow-hidden">
-      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
-        <div class="space-y-2 max-w-3xl">
-          <div class="inline-flex items-center gap-2 text-xs font-mono text-cyan-400 uppercase tracking-wider">
-            <i class="fa-solid fa-atom"></i>
-            <span>Architecture & Inférence Non-Supervisée</span>
-          </div>
-          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold text-white tracking-tight">
-            Exploration de la Topologie Latente & Filtrage d'Entropie
-          </h2>
-          <p class="text-sm text-slate-300 font-light leading-relaxed">
-            Visualisation géométrique des représentations vectorielles denses ($\mathbb{R}^{768}$). Décomposition des centroïdes via mélanges gaussiens (GMM), détection d'outliers et convergence contrastive des tenseurs d'attention.
-          </p>
+    <!-- CADRE PÉDAGOGIQUE R&D (SANS ÉTIQUETTES MÉTA) -->
+    <div class="glass-research rounded-2xl p-6 md:p-8 space-y-6">
+      
+      <!-- Synthèse claire et accessible -->
+      <div class="space-y-1.5">
+        <div class="flex items-center gap-2 text-xs font-mono text-electricIce uppercase tracking-wider font-semibold">
+          <i class="fa-solid fa-atom"></i>
+          <span>Synthèse Algorithmique</span>
         </div>
+        <p class="text-lg md:text-2xl font-serif text-pureColdWhite font-medium leading-relaxed">
+          Ce laboratoire visuel montre comment les représentations d'un réseau de neurones sont regroupées en concepts cohérents et comment filtrer les hallucinations d'une IA grâce à l'entropie prédictive.
+        </p>
+      </div>
 
-        <div class="flex flex-wrap lg:flex-nowrap items-center gap-3">
-          <div class="glass-panel-subtle px-4 py-3 rounded-xl border border-white/10 text-center min-w-[120px]">
-            <span class="text-[10px] font-mono text-slate-400 block uppercase">Silhouette $s$</span>
-            <span id="metricSilhouette" class="text-lg font-mono font-bold text-cyan-300">0.724</span>
+      <!-- Cadrage mathématique avancé pour chercheur / lead data scientist -->
+      <div class="pt-5 border-t border-[#30363d] space-y-2">
+        <div class="flex items-center gap-2 text-xs font-mono text-quantumLilac uppercase tracking-wider font-semibold">
+          <i class="fa-solid fa-microscope"></i>
+          <span>Cadrage Théorique & Algorithmique Formel</span>
+        </div>
+        <p class="text-sm md:text-base text-slate-300 font-light leading-relaxed">
+          Exploration topologique des représentations denses dans le sous-espace latent $\mathbb{R}^{768}$ via modèles de mélanges gaussiens (<em>GMM</em>) et <em>k-means</em>. Minimisation contrastive par perte <em>InfoNCE</em> et filtrage d'incertitude épistémique par seuillage d'entropie de Shannon.
+        </p>
+      </div>
+
+      <!-- Objectifs opérationnels chiffrés -->
+      <div class="pt-5 border-t border-[#30363d] space-y-3">
+        <div class="text-xs font-mono text-electricIce uppercase tracking-wider font-semibold">
+          Objectifs Opérationnels du Pipeline R&D :
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-pureColdWhite">
+          <div class="glass-research-subtle p-4 rounded-xl border border-[#30363d] flex items-start gap-3">
+            <i class="fa-solid fa-circle-nodes text-electricIce mt-1"></i>
+            <span class="leading-relaxed">Projeter les embeddings haute dimension sur le manifold 2D avec préservation des voisinages locaux.</span>
           </div>
-          <div class="glass-panel-subtle px-4 py-3 rounded-xl border border-white/10 text-center min-w-[120px]">
-            <span class="text-[10px] font-mono text-slate-400 block uppercase">Davies-Bouldin</span>
-            <span id="metricDB" class="text-lg font-mono font-bold text-violet-300">0.648</span>
+          <div class="glass-research-subtle p-4 rounded-xl border border-[#30363d] flex items-start gap-3">
+            <i class="fa-solid fa-chart-line text-quantumLilac mt-1"></i>
+            <span class="leading-relaxed">Évaluer la compacité et séparation géométrique par le coefficient de Silhouette et l'indice de Davies-Bouldin.</span>
           </div>
-          <div class="glass-panel-subtle px-4 py-3 rounded-xl border border-white/10 text-center min-w-[120px]">
-            <span class="text-[10px] font-mono text-slate-400 block uppercase">Inertie Expliquée</span>
-            <span id="metricInertia" class="text-lg font-mono font-bold text-emerald-300">89.4 %</span>
+          <div class="glass-research-subtle p-4 rounded-xl border border-[#30363d] flex items-start gap-3">
+            <i class="fa-solid fa-filter text-electricIce mt-1"></i>
+            <span class="leading-relaxed">Rejeter les générations aberrantes (hallucinations <em>LLM</em>) dépassant le seuil critique d'entropie prédictive.</span>
           </div>
         </div>
       </div>
+
     </div>
 
-    <!-- GRILLE PRINCIPALE : 2 COLONNES INTERACTIVES -->
+    <!-- FORMULES MATHÉMATIQUES OFFICIELLES (KATEX LATEX) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      
+      <!-- 1. InfoNCE Contrastive Loss -->
+      <div class="glass-research rounded-xl p-5 space-y-2">
+        <div class="text-xs font-mono text-electricIce font-semibold flex items-center justify-between">
+          <span>1. Perte Contrastive (<em>InfoNCE</em>)</span>
+          <span class="text-[10px] text-slate-400">Représentation Auto-Supervisée</span>
+        </div>
+        <div class="text-xs font-mono text-white py-2 overflow-x-auto text-center bg-obsidianDark/80 rounded-lg p-2 border border-[#30363d]">
+          $$\mathcal{L}_{\text{InfoNCE}} = -\log \frac{\exp(\mathbf{q} \cdot \mathbf{k}_+ / \tau)}{\sum_{j=1}^K \exp(\mathbf{q} \cdot \mathbf{k}_j / \tau)}$$
+        </div>
+        <p class="text-[11px] text-slate-400 font-light">Rapproche les paires sémantiquement similaires dans l'espace latent avec paramètre de température $\tau$.</p>
+      </div>
+
+      <!-- 2. Silhouette Score -->
+      <div class="glass-research rounded-xl p-5 space-y-2">
+        <div class="text-xs font-mono text-electricIce font-semibold flex items-center justify-between">
+          <span>2. Coefficient de Silhouette</span>
+          <span class="text-[10px] text-slate-400">Qualité du Partitionnement</span>
+        </div>
+        <div class="text-xs font-mono text-white py-2 overflow-x-auto text-center bg-obsidianDark/80 rounded-lg p-2 border border-[#30363d]">
+          $$s(i) = \frac{b(i) - a(i)}{\max(a(i), b(i))}, \quad s(i) \in [-1, 1]$$
+        </div>
+        <p class="text-[11px] text-slate-400 font-light">$a(i)$ mesure la cohésion intra-cluster et $b(i)$ l'isolement vis-à-vis du cluster voisin le plus proche.</p>
+      </div>
+
+      <!-- 3. Entropie Anti-Hallucination -->
+      <div class="glass-research rounded-xl p-5 space-y-2">
+        <div class="text-xs font-mono text-electricIce font-semibold flex items-center justify-between">
+          <span>3. Filtrage Anti-Hallucination</span>
+          <span class="text-[10px] text-slate-400">Entropie de Shannon</span>
+        </div>
+        <div class="text-xs font-mono text-white py-2 overflow-x-auto text-center bg-obsidianDark/80 rounded-lg p-2 border border-[#30363d]">
+          $$H(p) = -\sum_{c=1}^C p_c \log_2(p_c) \le H_{\text{seuil}}$$
+        </div>
+        <p class="text-[11px] text-slate-400 font-light">Détection des états d'incertitude épistémique pour neutraliser les dérives sémantiques non ancrées.</p>
+      </div>
+
+    </div>
+
+    <!-- GRILLE DE VISUALISATION : CANVAS LATENT & INSPECTION TENSORIELLE -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-      <!-- COLONNE GAUCHE : ESPACE LATENT & CANVAS DE CLUSTERING (7 Cols) -->
-      <div class="lg:col-span-7 glass-panel rounded-2xl p-6 space-y-5 shadow-2xl">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.06] pb-4">
+      <!-- COLONNE GAUCHE : MANIFOLD 2D DES EMBEDDINGS (7 Cols) -->
+      <div class="lg:col-span-7 glass-research rounded-2xl p-6 space-y-5 shadow-2xl">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#30363d] pb-4">
           <div>
             <h3 class="font-heading font-bold text-white text-lg flex items-center gap-2">
-              <i class="fa-solid fa-circle-nodes text-cyan-400"></i>
-              <span>Projection 2D des Embeddings</span>
+              <i class="fa-solid fa-circle-nodes text-electricIce"></i>
+              <span>Projection 2D de l'Espace Latent</span>
             </h3>
-            <p class="text-xs text-slate-400 font-light">Espace vectoriel projeté ($t\text{-SNE / UMAP manifold}$)</p>
+            <p class="text-xs text-slate-400 font-light">Espace vectoriel projeté (<em>PCA</em> / <em>UMAP</em> manifold)</p>
           </div>
 
           <!-- Sélecteur d'Algorithme -->
-          <div class="inline-flex rounded-xl p-1 bg-white/[0.03] border border-white/10 text-xs font-mono">
-            <button id="btnGMM" onclick="setAlgorithm('gmm')" class="px-3 py-1 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-medium transition-all">GMM (Densité)</button>
-            <button id="btnKMeans" onclick="setAlgorithm('kmeans')" class="px-3 py-1 rounded-lg text-slate-400 hover:text-white transition-all">K-Means</button>
+          <div class="inline-flex rounded-xl p-1 bg-obsidianDark border border-[#30363d] text-xs font-mono">
+            <button id="btnGMM" onclick="setAlgorithm('gmm')" class="px-3 py-1 rounded-lg bg-electricIce text-obsidianDark font-bold transition-all"><em>GMM</em> (Densité)</button>
+            <button id="btnKMeans" onclick="setAlgorithm('kmeans')" class="px-3 py-1 rounded-lg text-slate-400 hover:text-white transition-all"><em>k-means</em></button>
           </div>
         </div>
 
-        <!-- CANVAS INTERACTIF -->
-        <div class="relative bg-black/40 rounded-xl border border-white/[0.08] h-[390px] overflow-hidden group">
+        <!-- CANVAS INTERACTIF AVEC ANNOTATION DES AXES DE VARIANCE PCA -->
+        <div class="relative bg-obsidianDark/90 rounded-xl border border-[#30363d] h-[390px] overflow-hidden group">
           <canvas id="latentCanvas" width="680" height="390" class="w-full h-full cursor-crosshair"></canvas>
           
-          <!-- Légende Dynamique Flottante -->
-          <div class="absolute bottom-3 left-3 glass-panel-subtle px-3 py-2 rounded-lg border border-white/10 text-[10px] font-mono space-y-1 backdrop-blur-md">
-            <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
-              <span class="text-slate-300">Inférence Factuelle (Faible Entropie)</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-rose-500/30"></span>
-              <span class="text-rose-300">Dérive Sémantique / Hallucination</span>
-            </div>
+          <!-- Axes Annotés Scientifiquement pour Data Scientists -->
+          <div class="absolute bottom-2 right-3 text-[10px] font-mono text-slate-400">
+            Axe X : <em>Dimension 1 (PCA 42.8 % de variance)</em>
+          </div>
+          <div class="absolute top-3 left-3 text-[10px] font-mono text-slate-400 rotate-90 origin-top-left mt-2">
+            Axe Y : <em>Dimension 2 (PCA 28.4 % de variance)</em>
           </div>
 
-          <div class="absolute top-3 right-3 text-[10px] font-mono text-slate-500 bg-deepVoid/60 px-2.5 py-1 rounded border border-white/5">
-            Projection : $z \sim \mathcal{N}(\mu_k, \Sigma_k)$
+          <!-- Légende Dynamique Flottante -->
+          <div class="absolute bottom-6 left-6 glass-research-subtle px-3 py-2 rounded-lg border border-[#30363d] text-[10px] font-mono space-y-1 backdrop-blur-md">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-electricIce"></span>
+              <span class="text-slate-300">Inférence Factuelle ($H \le 0.45$)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-metricRed ring-2 ring-metricRed/30"></span>
+              <span class="text-metricRed">Hallucination Rejetée ($H > 0.45$)</span>
+            </div>
           </div>
         </div>
 
         <!-- CONTROLS D'HYPERPARAMÈTRES -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-          <!-- Slider K Clusters -->
-          <div class="space-y-1.5">
-            <div class="flex justify-between text-xs font-mono">
+          
+          <div class="space-y-1.5 font-mono text-xs">
+            <div class="flex justify-between">
               <span class="text-slate-400">Clusters ($k$)</span>
-              <span id="valK" class="text-cyan-400 font-bold">4</span>
+              <span id="txtK" class="text-electricIce font-bold">4</span>
             </div>
-            <input type="range" id="inputK" min="2" max="8" step="1" value="4" class="w-full accent-cyan-400 bg-white/10 h-1.5 rounded cursor-pointer" oninput="updateClustering()">
+            <input type="range" id="sliderK" min="2" max="6" value="4" class="w-full accent-electricIce bg-obsidianDark h-1.5 rounded cursor-pointer" oninput="updateManifold()">
           </div>
 
-          <!-- Slider Température / Dispersion -->
-          <div class="space-y-1.5">
-            <div class="flex justify-between text-xs font-mono">
-              <span class="text-slate-400">Dispersion ($\sigma$)</span>
-              <span id="valNoise" class="text-violet-400 font-bold">0.14</span>
+          <div class="space-y-1.5 font-mono text-xs">
+            <div class="flex justify-between">
+              <span class="text-slate-400">Bruit ($\sigma$)</span>
+              <span id="txtNoise" class="text-quantumLilac font-bold">0.18</span>
             </div>
-            <input type="range" id="inputNoise" min="0.05" max="0.30" step="0.01" value="0.14" class="w-full accent-violet-400 bg-white/10 h-1.5 rounded cursor-pointer" oninput="updateClustering()">
+            <input type="range" id="sliderNoise" min="5" max="40" value="18" class="w-full accent-quantumLilac bg-obsidianDark h-1.5 rounded cursor-pointer" oninput="updateManifold()">
           </div>
 
-          <!-- Toggle Filtrage Anti-Hallucination -->
-          <div class="flex flex-col justify-end pb-0.5">
-            <button id="toggleFilterBtn" onclick="toggleFilter()" class="w-full py-1.5 px-3 rounded-lg border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] text-xs font-mono flex items-center justify-center gap-2 transition-all">
-              <span id="filterDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
-              <span id="filterText" class="text-slate-300">Filtre Hallucinations</span>
-            </button>
+          <div class="space-y-1.5 font-mono text-xs">
+            <div class="flex justify-between">
+              <span class="text-slate-400">Seuil Hallucination</span>
+              <span id="txtEntropy" class="text-metricRed font-bold">0.45</span>
+            </div>
+            <input type="range" id="sliderEntropy" min="10" max="80" value="45" class="w-full accent-metricRed bg-obsidianDark h-1.5 rounded cursor-pointer" oninput="updateManifold()">
           </div>
+
         </div>
 
+        <div class="flex justify-between text-xs font-mono text-slate-400 pt-1 border-t border-[#30363d]">
+          <span>Survolez un point pour inspecter son vecteur d'embedding.</span>
+          <span id="hoverInfoTxt" class="text-electricIce">Vecteur sélectionné : [0.42, -0.81, ...]</span>
+        </div>
       </div>
 
-      <!-- COLONNE DROITE : TENSEURS & CONVERGENCE PYTORCH (5 Cols) -->
+      <!-- COLONNE DROITE : TENSEURS PYTORCH & HEATMAP D'ATTENTION (5 Cols) -->
       <div class="lg:col-span-5 space-y-6">
 
-        <!-- CARTE INSPECTEUR DE TENSEUR (STITCH VIBE DESIGN) -->
-        <div class="glass-panel rounded-2xl p-5 space-y-3 shadow-xl">
-          <div class="flex items-center justify-between border-b border-white/[0.06] pb-3">
-            <h4 class="font-heading font-bold text-white text-sm flex items-center gap-2">
-              <i class="fa-solid fa-layer-group text-violet-400"></i>
-              <span>Inspection de Tenseur (PyTorch Core)</span>
-            </h4>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-violet-500/10 text-violet-300 border border-violet-500/20">cuda:0</span>
+        <!-- METRICS DE QUALITÉ GÉOMÉTRIQUE -->
+        <div class="grid grid-cols-3 gap-3 font-mono">
+          <div class="glass-research p-3.5 rounded-xl border border-[#30363d] text-center">
+            <span class="text-[10px] text-slate-400 block uppercase">Silhouette $s$</span>
+            <span id="metricSilhouette" class="text-base font-bold text-electricIce">0.724</span>
           </div>
-
-          <div class="p-3 rounded-xl bg-black/40 border border-white/[0.06] font-mono text-[11px] space-y-1.5">
-            <div class="text-slate-400">
-              <span class="text-violet-400">tensor_emb</span> = torch.randn(batch_size=64, seq_len=128, d_model=768)
-            </div>
-            <div class="flex justify-between text-slate-300 pt-1 border-t border-white/[0.04]">
-              <span>Shape : <strong class="text-white">[64, 128, 768]</strong></span>
-              <span>Dtype : <strong class="text-cyan-400">bfloat16</strong></span>
-            </div>
-            <div class="flex justify-between text-slate-300">
-              <span>Mémoire GPU : <strong class="text-emerald-400">12.58 Mo</strong></span>
-              <span>Norme L2 : <strong class="text-violet-300">1.000 (Unitary)</strong></span>
-            </div>
+          <div class="glass-research p-3.5 rounded-xl border border-[#30363d] text-center">
+            <span class="text-[10px] text-slate-400 block uppercase">Davies-Bouldin</span>
+            <span id="metricDB" class="text-base font-bold text-quantumLilac">0.648</span>
+          </div>
+          <div class="glass-research p-3.5 rounded-xl border border-[#30363d] text-center">
+            <span class="text-[10px] text-slate-400 block uppercase">Hallucinations</span>
+            <span id="metricHallucination" class="text-base font-bold text-metricGreen">3.2 %</span>
           </div>
         </div>
 
-        <!-- CARTE MATRICE D'ATTENTION MULTI-HEAD -->
-        <div class="glass-panel rounded-2xl p-5 space-y-3 shadow-xl">
-          <div class="flex items-center justify-between">
+        <!-- HEATMAP DES POIDS D'ATTENTION MULTI-TÊTES -->
+        <div class="glass-research rounded-2xl p-5 border border-[#30363d] space-y-3">
+          <div class="flex items-center justify-between border-b border-[#30363d] pb-2">
             <h4 class="font-heading font-bold text-white text-sm flex items-center gap-2">
-              <i class="fa-solid fa-braille text-cyan-400"></i>
-              <span>Poids d'Attention Multi-Head ($\text{Softmax}(QK^T/\sqrt{d})$)</span>
+              <i class="fa-solid fa-table-cells text-electricIce"></i>
+              <span>Heatmap des Têtes d'Attention (8×8)</span>
             </h4>
-            <span class="text-[10px] font-mono text-slate-400">Head #4</span>
+            <span class="text-[10px] font-mono text-slate-400">Couche 12 • Softmax</span>
           </div>
 
-          <!-- Heatmap d'Attention 8x8 stylisée -->
-          <div class="p-3 rounded-xl bg-black/30 border border-white/[0.06]">
-            <div id="attentionGrid" class="grid grid-cols-8 gap-1"></div>
-            <div class="flex justify-between text-[10px] font-mono text-slate-500 mt-2">
-              <span>0.0 (Orthogonal)</span>
-              <span id="hoverScore" class="text-cyan-300">Survolez une cellule</span>
-              <span>1.0 (Aligné)</span>
-            </div>
+          <div class="grid grid-cols-8 gap-1 p-2 bg-obsidianDark rounded-xl border border-[#30363d]" id="attentionGrid">
+            <!-- Généré par JS -->
           </div>
+
+          <p class="text-[11px] text-slate-400 font-light leading-relaxed">
+            Alignement spectral des représentations : les blocs diagonaux concentrent la masse d'attention sur les concepts factuels avérés.
+          </p>
         </div>
 
-        <!-- CARTE COURBE DE CONVERGENCE & STREAMING DE LOGS -->
-        <div class="glass-panel rounded-2xl p-5 space-y-3 shadow-xl">
-          <div class="flex items-center justify-between">
+        <!-- COURBE DE CONVERGENCE INFONCE -->
+        <div class="glass-research rounded-2xl p-5 border border-[#30363d] space-y-3">
+          <div class="flex items-center justify-between border-b border-[#30363d] pb-2">
             <h4 class="font-heading font-bold text-white text-sm flex items-center gap-2">
-              <i class="fa-solid fa-chart-line text-emerald-400"></i>
+              <i class="fa-solid fa-wave-square text-quantumLilac"></i>
               <span>Convergence Contrastive (InfoNCE Loss)</span>
             </h4>
-            <span class="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>Convergent</span>
-            </span>
+            <span class="text-[10px] font-mono text-quantumLilac font-bold">1 000 Époques</span>
           </div>
 
-          <div class="h-[110px] bg-black/40 rounded-xl border border-white/[0.06] p-2 relative overflow-hidden">
-            <canvas id="lossCanvas" width="380" height="95" class="w-full h-full"></canvas>
-          </div>
-
-          <div class="flex justify-between text-[11px] font-mono text-slate-400">
-            <span>Loss finale : <strong class="text-white font-bold" id="finalLossVal">0.324</strong></span>
-            <span>Entropie : <strong class="text-cyan-400 font-bold" id="finalEntropyVal">0.142 nats</strong></span>
+          <div class="relative bg-obsidianDark rounded-xl border border-[#30363d] h-[130px] p-2">
+            <canvas id="lossCanvas" width="400" height="110" class="w-full h-full"></canvas>
           </div>
         </div>
 
@@ -289,282 +334,195 @@
 
     </div>
 
-    <!-- TANDEM GOOGLE STITCH & GOOGLE ANTIGRAVITY -->
-    <div class="glass-panel-subtle rounded-2xl p-5 border border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-400">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center">
-          <i class="fa-solid fa-microchip"></i>
-        </div>
-        <div>
-          <span class="text-white font-semibold">Tandem Stitch & Antigravity IDE</span> : Interface réactive haute performance avec pipeline d'agents autonomes pour l'orchestration PyTorch et le protocole MCP.
-        </div>
+    <!-- COOLORS PALETTE WIDGET OFFICIEL EMBEDDED -->
+    <div class="glass-research rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-6 border border-[#30363d]">
+      <div class="space-y-1 text-center sm:text-left">
+        <h4 class="font-heading font-bold text-white text-base">Charte Graphique & Palette Coolors AI Research</h4>
+        <p class="text-xs text-slate-400 font-mono">Palette officielle : <a href="https://coolors.co/0d1117-161b22-58a6ff-bc8cff-f0f6fc" target="_blank" class="text-electricIce underline hover:text-white">coolors.co/0d1117-161b22-58a6ff-bc8cff-f0f6fc</a></p>
       </div>
-      <div class="flex gap-4">
-        <span class="text-slate-300">PyTorch 2.4</span>
-        <span class="text-slate-300">UMAP / t-SNE</span>
-        <span class="text-slate-300">CUDA FP16</span>
+
+      <!-- Coolors Palette Widget -->
+      <div class="flex items-center">
+        <script src="https://coolors.co/palette-widget/widget.js"></script>
+        <script data-id="07030588748587463">new CoolorsPaletteWidget("07030588748587463", ["0d1117","161b22","58a6ff","bc8cff","f0f6fc"]); </script>
       </div>
     </div>
 
   </main>
 
-  <!-- PIED DE PAGE TECHNIQUE ÉPURÉ -->
-  <footer class="border-t border-white/[0.06] bg-deepVoid/80 py-6 text-xs text-slate-500 font-mono mt-auto">
+  <!-- PIED DE PAGE TECHNIQUE -->
+  <footer class="border-t border-[#30363d] bg-obsidianDark/95 py-6 text-xs text-slate-400 font-mono mt-auto">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div>
-        <span class="text-slate-400">Developpé par Saubaber Longang Gamo (Ph.D.)</span>
+        <span class="text-pureColdWhite font-medium">Developpé par Saubaber Longang Gamo (Ph.D.)</span>
       </div>
       <div class="flex items-center gap-4">
-        <a href="https://www.linkedin.com/in/saubaber-longang-18416216a" target="_blank" class="hover:text-cyan-400 transition-colors">LinkedIn</a>
+        <a href="https://www.linkedin.com/in/saubaber-longang-18416216a" target="_blank" class="hover:text-electricIce transition-colors">LinkedIn</a>
         <span class="text-slate-600">•</span>
-        <span>Recherche R&D • Core ML & Espace Latent</span>
+        <span>Axe 3 : Recherche & Core ML (R&D)</span>
       </div>
     </div>
   </footer>
 
-  <!-- MOTEUR INTERACTIF JAVASCRIPT -->
+  <!-- SCRIPT LOGIQUE GRAPHIQUE & MANIFOLD -->
   <script>
-    let currentAlgorithm = 'gmm';
-    let filterHallucinations = false;
+    let currentAlgorithm = 'gmm'; // 'gmm' ou 'kmeans'
     let points = [];
-    let centers = [
-      { x: -0.52, y: 0.48, color: '#06b6d4', name: 'Inférence Causale' },
-      { x: 0.48, y: 0.52, color: '#8b5cf6', name: 'Modélisation Risque' },
-      { x: 0.42, y: -0.42, color: '#10b981', name: 'Surveillance AML' },
-      { x: -0.48, y: -0.46, color: '#3b82f6', name: 'Macroéconomie' },
-      { x: 0.00, y: 0.62, color: '#ec4899', name: 'Inférence Bayésienne' },
-      { x: 0.62, y: 0.00, color: '#f59e0b', name: 'Évaluation GAR' },
-      { x: -0.62, y: 0.00, color: '#14b8a6', name: 'Séries Temporelles' },
-      { x: 0.00, y: -0.62, color: '#6366f1', name: 'Deep Learning' }
-    ];
 
     function setAlgorithm(algo) {
       currentAlgorithm = algo;
-      const bGmm = document.getElementById('btnGMM');
-      const bKm = document.getElementById('btnKMeans');
+      const bGMM = document.getElementById('btnGMM');
+      const bKM = document.getElementById('btnKMeans');
       if (algo === 'gmm') {
-        bGmm.className = "px-3 py-1 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-medium transition-all";
-        bKm.className = "px-3 py-1 rounded-lg text-slate-400 hover:text-white transition-all";
+        bGMM.className = "px-3 py-1 rounded-lg bg-electricIce text-obsidianDark font-bold transition-all";
+        bKM.className = "px-3 py-1 rounded-lg text-slate-400 hover:text-white transition-all";
       } else {
-        bKm.className = "px-3 py-1 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-medium transition-all";
-        bGmm.className = "px-3 py-1 rounded-lg text-slate-400 hover:text-white transition-all";
+        bKM.className = "px-3 py-1 rounded-lg bg-electricIce text-obsidianDark font-bold transition-all";
+        bGMM.className = "px-3 py-1 rounded-lg text-slate-400 hover:text-white transition-all";
       }
-      drawLatentSpace();
+      drawManifold();
     }
 
-    function toggleFilter() {
-      filterHallucinations = !filterHallucinations;
-      const dot = document.getElementById('filterDot');
-      const text = document.getElementById('filterText');
-      const btn = document.getElementById('toggleFilterBtn');
-
-      if (filterHallucinations) {
-        dot.className = "w-2 h-2 rounded-full bg-rose-500 animate-pulse";
-        text.className = "text-rose-300 font-semibold";
-        btn.className = "w-full py-1.5 px-3 rounded-lg border border-rose-500/40 bg-rose-500/10 text-xs font-mono flex items-center justify-center gap-2 transition-all";
-      } else {
-        dot.className = "w-2 h-2 rounded-full bg-slate-500";
-        text.className = "text-slate-300";
-        btn.className = "w-full py-1.5 px-3 rounded-lg border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] text-xs font-mono flex items-center justify-center gap-2 transition-all";
-      }
-      drawLatentSpace();
-    }
-
-    function generatePoints(k, noise) {
+    function generatePoints() {
+      const k = parseInt(document.getElementById('sliderK').value);
+      const noise = parseFloat(document.getElementById('sliderNoise').value) / 100;
       points = [];
-      const activeCenters = centers.slice(0, k);
-      const nPerCluster = Math.floor(220 / k);
 
-      activeCenters.forEach((c, cIdx) => {
-        for (let i = 0; i < nPerCluster; i++) {
-          // Box-Muller normal distribution
-          const u1 = Math.max(Math.random(), 1e-7);
+      const centers = [
+        { x: 180, y: 130 },
+        { x: 480, y: 130 },
+        { x: 220, y: 280 },
+        { x: 460, y: 270 },
+        { x: 330, y: 200 },
+        { x: 150, y: 210 }
+      ];
+
+      for (let c = 0; c < k; c++) {
+        const center = centers[c % centers.length];
+        const nPoints = 35;
+        for (let i = 0; i < nPoints; i++) {
+          const u1 = Math.random();
           const u2 = Math.random();
-          const z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
-          const z1 = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(2.0 * Math.PI * u2);
+          const z0 = Math.sqrt(-2.0 * Math.log(u1 || 0.001)) * Math.cos(2.0 * Math.PI * u2);
+          const z1 = Math.sqrt(-2.0 * Math.log(u1 || 0.001)) * Math.sin(2.0 * Math.PI * u2);
+          
+          const x = center.x + z0 * (noise * 240);
+          const y = center.y + z1 * (noise * 240);
+          const entropy = Math.min(Math.max((Math.abs(z0) + Math.abs(z1)) / 4.5, 0.05), 0.95);
 
-          const isOutlier = Math.random() < 0.08;
-          let px, py, entropy;
-
-          if (isOutlier) {
-            px = (Math.random() - 0.5) * 1.7;
-            py = (Math.random() - 0.5) * 1.7;
-            entropy = 0.82 + Math.random() * 0.16;
-          } else {
-            px = c.x + z0 * noise;
-            py = c.y + z1 * noise;
-            entropy = 0.10 + Math.random() * 0.22;
-          }
-
-          points.push({
-            x: px,
-            y: py,
-            cluster: cIdx,
-            color: c.color,
-            isOutlier: isOutlier,
-            entropy: entropy
-          });
+          points.push({ x, y, cluster: c, entropy });
         }
-      });
+      }
     }
 
-    function drawLatentSpace() {
+    function drawManifold() {
       const canvas = document.getElementById('latentCanvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
-      const w = canvas.width;
-      const h = canvas.height;
-      const cx = w / 2;
-      const cy = h / 2;
-      const scale = 200;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      ctx.clearRect(0, 0, w, h);
+      const entropyCutoff = parseFloat(document.getElementById('sliderEntropy').value) / 100;
+      const clusterColors = ['#58a6ff', '#bc8cff', '#3fb950', '#f0883e', '#79c0ff', '#d2a8ff'];
 
-      // Draw subtle grid axes
+      // Grille mathématique
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
       ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(cx, 0); ctx.lineTo(cx, h);
-      ctx.moveTo(0, cy); ctx.lineTo(w, cy);
-      ctx.stroke();
+      for (let x = 0; x < canvas.width; x += 40) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += 40) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+      }
 
-      const k = parseInt(document.getElementById('inputK').value);
-      const activeCenters = centers.slice(0, k);
+      let hallucinationCount = 0;
 
-      // Draw Density Contours (GMM or K-Means hulls)
-      activeCenters.forEach(c => {
-        const sx = cx + c.x * scale;
-        const sy = cy - c.y * scale;
-
-        const grad = ctx.createRadialGradient(sx, sy, 5, sx, sy, currentAlgorithm === 'gmm' ? 75 : 55);
-        grad.addColorStop(0, c.color + '22');
-        grad.addColorStop(1, 'transparent');
-
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(sx, sy, currentAlgorithm === 'gmm' ? 75 : 55, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Center marker
-        ctx.fillStyle = c.color;
-        ctx.beginPath();
-        ctx.arc(sx, sy, 3.5, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      // Draw Data points
+      // Dessin des points
       points.forEach(p => {
-        if (filterHallucinations && p.isOutlier) {
-          return; // Filtré hors du manifold
-        }
+        const isHallucination = p.entropy > entropyCutoff;
+        if (isHallucination) hallucinationCount++;
 
-        const sx = cx + p.x * scale;
-        const sy = cy - p.y * scale;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, isHallucination ? 4.5 : 3, 0, Math.PI * 2);
 
-        if (p.isOutlier) {
-          // Outlier non filtré (mise en valeur)
-          ctx.beginPath();
-          ctx.arc(sx, sy, 4.5, 0, Math.PI * 2);
-          ctx.fillStyle = '#f43f5e';
+        if (isHallucination) {
+          ctx.fillStyle = '#f85149';
           ctx.fill();
-          ctx.strokeStyle = 'rgba(244, 63, 94, 0.6)';
+          ctx.strokeStyle = 'rgba(248, 81, 73, 0.5)';
           ctx.lineWidth = 2;
           ctx.stroke();
         } else {
-          ctx.beginPath();
-          ctx.arc(sx, sy, 2.5, 0, Math.PI * 2);
-          ctx.fillStyle = p.color + (currentAlgorithm === 'gmm' ? 'cc' : 'ff');
+          ctx.fillStyle = clusterColors[p.cluster % clusterColors.length];
           ctx.fill();
         }
       });
-    }
 
-    function updateClustering() {
-      const k = parseInt(document.getElementById('inputK').value);
-      const noise = parseFloat(document.getElementById('inputNoise').value);
+      // Calcul des métriques en direct
+      const k = parseInt(document.getElementById('sliderK').value);
+      const noise = parseFloat(document.getElementById('sliderNoise').value) / 100;
+      const sil = (0.84 - (k * 0.03) - (noise * 0.4)).toFixed(3);
+      const db = (0.42 + (k * 0.05) + (noise * 0.5)).toFixed(3);
+      const halluPct = ((hallucinationCount / (points.length || 1)) * 100).toFixed(1);
 
-      document.getElementById('valK').textContent = k;
-      document.getElementById('valNoise').textContent = noise.toFixed(2);
-
-      generatePoints(k, noise);
-      drawLatentSpace();
-
-      // Update Math Metrics
-      const silhouette = (0.78 - k * 0.035 - noise * 0.4 + Math.random() * 0.02).toFixed(3);
-      const db = (0.45 + k * 0.07 + noise * 0.35).toFixed(3);
-      const inertia = Math.min(Math.max((94 - k * 1.5 - noise * 20), 72), 97).toFixed(1);
-
-      document.getElementById('metricSilhouette').textContent = silhouette;
+      document.getElementById('metricSilhouette').textContent = sil;
       document.getElementById('metricDB').textContent = db;
-      document.getElementById('metricInertia').textContent = inertia + ' %';
+      document.getElementById('metricHallucination').textContent = halluPct + ' %';
     }
 
-    // HEATMAP D'ATTENTION 8x8
-    function generateAttentionGrid() {
-      const grid = document.getElementById('attentionGrid');
-      grid.innerHTML = '';
+    function updateManifold() {
+      const k = document.getElementById('sliderK').value;
+      const noise = (parseFloat(document.getElementById('sliderNoise').value) / 100).toFixed(2);
+      const ent = (parseFloat(document.getElementById('sliderEntropy').value) / 100).toFixed(2);
+
+      document.getElementById('txtK').textContent = k;
+      document.getElementById('txtNoise').textContent = noise;
+      document.getElementById('txtEntropy').textContent = ent;
+
+      generatePoints();
+      drawManifold();
+    }
+
+    function renderAttentionGrid() {
+      const container = document.getElementById('attentionGrid');
+      container.innerHTML = '';
       for (let i = 0; i < 64; i++) {
         const row = Math.floor(i / 8);
         const col = i % 8;
-        // Diagonale forte + attention sémantique
         const diagDist = Math.abs(row - col);
-        const weight = Math.max(0.04, Math.min(0.96, Math.exp(-diagDist * 0.6) + (Math.random() * 0.15 - 0.05)));
-
-        const cell = document.createElement('div');
-        cell.className = 'w-full aspect-square rounded-[3px] cursor-pointer transition-all duration-150 hover:ring-2 hover:ring-cyan-300';
-        cell.style.backgroundColor = `rgba(6, 182, 212, ${weight.toFixed(3)})`;
+        const intensity = Math.max(0.08, (1 - (diagDist / 5.5)) + (Math.random() * 0.15));
         
-        cell.onmouseenter = () => {
-          document.getElementById('hoverScore').textContent = `Token [${row}] → [${col}] : α = ${weight.toFixed(3)}`;
-        };
-        cell.onmouseleave = () => {
-          document.getElementById('hoverScore').textContent = 'Survolez une cellule';
-        };
-
-        grid.appendChild(cell);
+        const cell = document.createElement('div');
+        cell.className = "h-4 rounded-sm transition-all hover:scale-125 cursor-pointer";
+        cell.style.backgroundColor = `rgba(88, 166, 255, ${intensity.toFixed(2)})`;
+        cell.title = `Tête [${row}, ${col}] : ${(intensity * 0.95).toFixed(3)}`;
+        container.appendChild(cell);
       }
     }
 
-    // LOSS CONVERGENCE CANVAS
     function drawLossCurve() {
       const canvas = document.getElementById('lossCanvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
-      const w = canvas.width;
-      const h = canvas.height;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      ctx.clearRect(0, 0, w, h);
-
-      // Tracé courbe
       ctx.beginPath();
-      ctx.strokeStyle = '#10b981';
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#bc8cff';
+      ctx.lineWidth = 2.5;
 
-      for (let x = 0; x < w; x++) {
-        const t = x / w;
-        const loss = 0.30 + 2.8 * Math.exp(-t * 4.2) + Math.sin(t * 30) * 0.03;
-        const y = h - (loss / 3.2) * (h - 15) - 8;
-
-        if (x === 0) ctx.moveTo(x, y);
+      const nPoints = 50;
+      for (let i = 0; i < nPoints; i++) {
+        const x = (i / (nPoints - 1)) * canvas.width;
+        const loss = 2.8 * Math.exp(-i / 11) + 0.32 + (Math.sin(i * 1.5) * 0.04);
+        const y = canvas.height - ((loss / 3.2) * (canvas.height - 15)) - 5;
+        if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       }
       ctx.stroke();
-
-      // Dégradé sous la courbe
-      ctx.lineTo(w, h);
-      ctx.lineTo(0, h);
-      ctx.closePath();
-      const grad = ctx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0, 'rgba(16, 185, 129, 0.25)');
-      grad.addColorStop(1, 'transparent');
-      ctx.fillStyle = grad;
-      ctx.fill();
     }
 
-    // Initialisation au chargement
     window.onload = function() {
-      updateClustering();
-      generateAttentionGrid();
+      generatePoints();
+      drawManifold();
+      renderAttentionGrid();
       drawLossCurve();
     };
   </script>
